@@ -9,6 +9,7 @@
           },
           "dependencies": {
                     "@react-native-async-storage/async-storage": "^1.15.9",
+                    "@react-native-community/datetimepicker": "^3.5.2",
                     "@react-navigation/bottom-tabs": "^6.0.9",
                     "@react-navigation/drawer": "^6.1.8",
                     "@react-navigation/material-top-tabs": "^6.0.6",
@@ -16,10 +17,12 @@
                     "@react-navigation/native-stack": "^6.2.5",
                     "expo": "~42.0.1",
                     "expo-status-bar": "~1.0.4",
+                    "moment": "^2.29.1",
                     "native-base": "^3.2.1",
                     "react": "16.13.1",
                     "react-dom": "16.13.1",
                     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
+                    "react-native-dropdown-picker": "^5.2.3",
                     "react-native-gesture-handler": "~1.10.2",
                     "react-native-pager-view": "5.0.12",
                     "react-native-reanimated": "~2.2.0",
@@ -29,12 +32,12 @@
                     "react-native-tab-view": "^3.1.1",
                     "react-native-web": "~0.13.12",
                     "react-navigation": "^4.4.4",
-                    "styled-components": "^5.3.3",
-                    "styled-system": "^5.1.5",
                     "react-redux": "^7.2.4",
                     "redux": "^4.1.0",
+                    "redux-devtools-extension": "^2.13.9",
                     "redux-thunk": "^2.3.0",
-                    "redux-devtools-extension": "^2.13.9"
+                    "styled-components": "^5.3.3",
+                    "styled-system": "^5.1.5"
           },
           "devDependencies": {
                     "@babel/core": "~7.9.0"

@@ -1,0 +1,1 @@
+export const crasSeletor = ({ cras }) => cras.cras

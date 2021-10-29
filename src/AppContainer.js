@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useEffect }  from "react";
+import React, { useEffect, useState }  from "react";
+import { ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import UserNavigator from './routes/UserNavigator'
 import LoginScreen from "./screens/LoginScreen";
@@ -13,16 +14,18 @@ const Stack = createNativeStackNavigator()
 
 export default function AppContainer() {
           const dispatch = useDispatch()
+          const [userLoading, setUserLoading] = useState(true)
           useEffect(() => {
                     (async function() {
                               const user = await AsyncStorage.getItem('user')
                               // await AsyncStorage.removeItem('user')
                               dispatch(setUserAction(JSON.parse(user)))
+                              setUserLoading(false)
                     })()
           }, [dispatch])
           const user = useSelector(userSelector)
-          console.log(user)
           return (
+                    userLoading ? <ActivityIndicator color="#007BFF" animating={userLoading} /> :
                     <NavigationContainer>
                               {user ?
                                         <UserNavigator />

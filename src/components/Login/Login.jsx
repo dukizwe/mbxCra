@@ -6,6 +6,9 @@ import { MaterialIcons } from "@expo/vector-icons"
 import { primaryColor } from '../Welcome/styles'
 import { useNavigation } from '@react-navigation/core'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux'
+import { setUserAction } from '../../store/actions/userActions'
+import { randomInt } from '../../functions'
 
 export default function Login() {
           const [show, setShow] = useState(false)
@@ -13,14 +16,17 @@ export default function Login() {
           const [password, setPassword] = useState('')
           const [loading, setLoading] = useState(false)
           const navigation = useNavigation()
+          const dispatch = useDispatch()
 
           const submitForm = () => {
                     setLoading(true)
                     const timeout = setTimeout(async () => {
                               setLoading(false)
                               try {
-                                        await AsyncStorage.setItem('user', JSON.stringify({email, password}))
-                                        navigation.navigate('Welcome')
+                                        const id = randomInt(55, 56)
+                                        await AsyncStorage.setItem('user', JSON.stringify({email, password, id}))
+                                        dispatch(setUserAction({email, password, id}))
+                                        // navigation.navigate('Welcome')
                               } catch (error){
                                         console.log(error)
                               }
@@ -33,7 +39,7 @@ export default function Login() {
                                                   <Center flex={1}>
                                                             <Heading mt={5} mb={5} style={{ fontSize: 25}} >Connexion</Heading>
                                                             <View style={styles.form}>
-                                                                      <Input primaryColor='#000' placeholder="Email" w='full' size='lg' py={3} InputLeftElement={
+                                                                      <Input keyboardType='email-address' primaryColor='#000' placeholder="Email" w='full' size='lg' py={3} InputLeftElement={
                                                                                 <Icon
                                                                                           as={<MaterialIcons name="email" />}
                                                                                           size={5}

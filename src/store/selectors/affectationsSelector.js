@@ -1,0 +1,1 @@
+export const affectationsSeletor = ({ affectations }) => affectations.affectations

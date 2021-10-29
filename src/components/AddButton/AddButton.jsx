@@ -1,15 +1,13 @@
-import React, { useContext } from 'react'
+import React from 'react'
 
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 
 import { AntDesign } from '@expo/vector-icons'; 
 import { useNavigation } from '@react-navigation/core';
-import HomeContext from '../../context/HomeContext';
 
 export default function AddButton() {
-          const { showForm } = useContext(HomeContext)
           const navigation = useNavigation()
-          return <TouchableOpacity style={styles.addBtn} onPress={showForm}>
+          return <TouchableOpacity style={styles.addBtn} onPress={() => navigation.navigate('NonPlanifie')}>
                     <AntDesign name="plus" size={24} color="white" />
           </TouchableOpacity>
 }
