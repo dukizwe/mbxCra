@@ -14,7 +14,8 @@ export function craReducer(state = initials, action) {
                     case APPEND_CRA_ACTION:
                               return {...state, affectations: [...state.cras, ...action.payload]}
                     case PREPEND_CRA_ACTION:
-                              return {...state, cras: [action.payload, ...state.cras]}
+                              const newCras = [action.payload, ...state.cras]
+                              return {...state, cras: newCras}
                     case CHANGE_OFFSET_ACTION:
                               return {...state, offset: action.payload}
                     default:

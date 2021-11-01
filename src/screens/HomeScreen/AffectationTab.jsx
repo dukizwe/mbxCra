@@ -20,7 +20,7 @@ export default function AffectationTab() {
                                                             }}
                                                             >
                                                             <Menu.Item>
-                                                                      <Input style={styles.searchInput}  value={search} onChangeText={(value) => setSearch(value)} mt={2} placeholder="Tapez ici" size='lg' py={2} />
+                                                                      <Input autoFocus style={styles.searchInput}  value={search} onChangeText={(value) => setSearch(value)} mt={2} placeholder="Tapez ici" size='lg' py={2} />
                                                             </Menu.Item>
                                                   </Menu>
                                                   
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
                     paddingTop: 0,
           },
           searchInput: {
-                    backgroundColor: '#fff'
+                    backgroundColor: '#fff',
+                    width: 280
           }
 });

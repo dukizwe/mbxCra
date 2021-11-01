@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect, useState }  from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import UserNavigator from './routes/UserNavigator'
 import LoginScreen from "./screens/LoginScreen";
@@ -25,7 +25,10 @@ export default function AppContainer() {
           }, [dispatch])
           const user = useSelector(userSelector)
           return (
-                    userLoading ? <ActivityIndicator color="#007BFF" animating={userLoading} /> :
+                    userLoading ?
+                    <View style={{ flex: 1, alignContent: 'center', alignItems: 'center', justifyContent: 'center'}}>
+                              <ActivityIndicator color="#007BFF" animating={userLoading} size='large' />
+                    </View> :
                     <NavigationContainer>
                               {user ?
                                         <UserNavigator />

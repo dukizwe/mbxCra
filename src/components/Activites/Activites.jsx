@@ -10,9 +10,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { userSelector } from '../../store/selectors/userSelector'
 
 export default function Activites() {
-          const [loading, setLoading] = useState(true)
+          const [loading, setActiviteLoading] = useState(true)
           const dispatch = useDispatch()
           const user = useSelector(userSelector)
+          const activites = useSelector(crasSeletor)
+          const [state, setState] = useState(false)
           useEffect(() => {
                     (async function() {
                               // await AsyncStorage.removeItem('cras')
@@ -20,27 +22,24 @@ export default function Activites() {
                               const defaultCras = defaultCrasString ? JSON.parse(defaultCrasString)?.cras : []
                               if(!defaultCras || defaultCras.length === 0) {
                                         // fetch cras
-                                        console.log('first')
-                                        const response = await fetch('http://app.mediabox.bi:3140/Afficher_cra/'+user.id)
+                                        const response = await fetch('http://app.mediabox.bi:3140/Afficher_cra/'+user.collaboId)
                                         const fetchedCras = await response.json()
                                         if(response.ok) {
                                                   await AsyncStorage.setItem('cras', JSON.stringify({ cras: fetchedCras }))
                                                   dispatch(addCrasAction(fetchedCras))
-                                                  setLoading(false)
+                                                  setActiviteLoading(false)
                                         }
                               } else {
                                         // load fetched affectations
-                                        console.log('second')
                                         dispatch(addCrasAction(defaultCras))
-                                        setLoading(false)
+                                        setActiviteLoading(false)
                               }
                               })()
           }, [])
-          const activites = useSelector(crasSeletor)
           return (
                     loading ? <ActivityIndicator color="#007BFF" animating={loading}/> :
                     <FlatList style={styles.activites} data={activites} renderItem={({ item }) => (
-                              <Activite activite={item} key={item.id} />
+                              <Activite activite={item} key={item.IDActivite} setState={setState} />
                     )} />
           )
 }

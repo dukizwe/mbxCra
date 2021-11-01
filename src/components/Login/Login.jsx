@@ -1,4 +1,4 @@
-import { Center, Heading, Icon, Input, NativeBaseProvider, Button } from 'native-base'
+import { Center, Heading, Icon, Input, NativeBaseProvider, Button, useToast } from 'native-base'
 import React, { useState } from 'react'
 import { View, Text } from 'react-native'
 import styles from './styles'
@@ -8,19 +8,39 @@ import { useNavigation } from '@react-navigation/core'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux'
 import { setUserAction } from '../../store/actions/userActions'
-import { randomInt } from '../../functions'
+import { fetchApi } from '../../functions'
 
 export default function Login() {
           const [show, setShow] = useState(false)
           const [email, setEmail] = useState('')
           const [password, setPassword] = useState('')
           const [loading, setLoading] = useState(false)
-          const navigation = useNavigation()
+          const toast = useToast()
           const dispatch = useDispatch()
 
-          const submitForm = () => {
+          const submitForm = async () => {
                     setLoading(true)
-                    const timeout = setTimeout(async () => {
+                    try  {
+                              const { user } = await fetchApi('http://app.mediabox.bi:3140/login', {
+                                        method: 'POST',
+                                        body: JSON.stringify({email, password}),
+                                        headers: {
+                                                  'Content-Type': 'application/json'
+                                        }
+                              })
+                              setLoading(false)
+                              await AsyncStorage.setItem('user', JSON.stringify(user))
+                              dispatch(setUserAction(user))
+                    } catch(error) {
+                              setLoading(false)
+                              toast.show({
+                                        title: "Identifiant ou mot de passe incorrect",
+                                        placement: "bottom",
+                                        status: 'error',
+                                        duration: 2000
+                              })
+                    }
+                    /*const timeout = setTimeout(async () => {
                               setLoading(false)
                               try {
                                         const id = randomInt(55, 56)
@@ -30,7 +50,8 @@ export default function Login() {
                               } catch (error){
                                         console.log(error)
                               }
-                    }, 2000)
+                    }, 2000)*/
+
           }
           return (
                     <NativeBaseProvider>
@@ -69,7 +90,7 @@ export default function Login() {
                                                                       />
                                                             </View>
                                                             <View style={styles.actions}>
-                                                                      <Button isLoading={loading} onPress={submitForm} size='lg' w="full" style={styles.login} py={4} backgroundColor={primaryColor} _text={{ fontSize: 18}} borderRadius={10}>Se connecter</Button>
+                                                                      <Button isDisabled={email == '' || password == ''} isLoading={loading} onPress={submitForm} size='lg' w="full" style={styles.login} py={4} backgroundColor={primaryColor} _text={{ fontSize: 18}} borderRadius={10}>Se connecter</Button>
                                                             </View>
                                                   </Center>
                                         </View>

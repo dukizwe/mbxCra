@@ -40,7 +40,6 @@ export default function NonPlanifieForm() {
                     })()
           }, [])
           // tache select
-          // console.log(projects)
           const [openTach, setOpenTach] = useState(false);
           const [tacheValue, setTacheValue] = useState(null); 
           const [taches, setTacheItems] = useState([])
@@ -81,14 +80,14 @@ export default function NonPlanifieForm() {
                     setLoading(true)
                     try {
                               const affectationData = {
-                                        IDEmploye: user.id,
                                         IDTache: tacheValue,
                                         DescActivite: activite,
                                         DateDebutAct: new Date(dateDebut).toJSON().slice(0, 19).replace('T', ' '),
                                         DateFinPrev: new Date(dateFin).toJSON().slice(0, 19).replace('T', ' '),
-                                        created_by: user.id,
+                                        created_by: user.userid,
                                         NbHeureEstimees: NbHeures,
-                                        Commentaires: comment
+                                        Commentaires: comment,
+                                        IDEmploye: user.collaboId,
                               }
                               const newAffectation = await fetchApi('http://app.mediabox.bi:3140/Enregistre_Activite', {
                                         method: 'POST',
@@ -98,11 +97,10 @@ export default function NonPlanifieForm() {
                                         }
                               });
                               const te = {...newAffectation, ...{
-                                        Projet: 'DGPC',
                                         DescActivite: activite,
                                         DateDebutAff: new Date(dateDebut),
                                         DateFin: new Date(dateFin),
-                                        IDActivite: newAffectation.id
+                                        IDActivite: newAffectation.IDActivite
                                }}
                               await AsyncStorage.setItem('affectations', JSON.stringify({ affectations: [te, ...affectations] }))
                               dispatch(prependAffectationsAction(te))

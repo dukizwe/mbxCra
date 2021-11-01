@@ -4,7 +4,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'; 
 
-export default function Affectation({ affectation }) {
+export default function Affectation({ affectation: defaultAFf }) {
+          const [affectation, setAffectation] = useState(defaultAFf)
           // console.log(affectation)
           const navigation = useNavigation()
           // affectation.ActiviteFinie = 0
@@ -12,7 +13,7 @@ export default function Affectation({ affectation }) {
                     !affectation.ActiviteFinie && handleNewCraPress()
           }
           const handleNewCraPress = () => {
-                    navigation.navigate('NewCla', { affectation })
+                    navigation.navigate('NewCla', { affectation, setAffectation })
           }
 
           const decDate = date => {
@@ -42,7 +43,7 @@ export default function Affectation({ affectation }) {
                                                   <Text style={styles.activiteName} numberOfLines={1} >{ affectation.DescActivite }</Text>
                                                   <View style={styles.affectationsDescription}>
                                                             <View style={styles.projetHeure}>
-                                                                      <Text style={styles.projetName} numberOfLines={1} >{ affectation.Projet } |</Text>
+                                                                      <Text style={styles.projetName} numberOfLines={1} >{ affectation.Taches } |</Text>
                                                                       <Text style={styles.nbreHeures} numberOfLines={1} > { affectation.NbHeureEstimees } heures</Text>
                                                             </View>
                                                             <View style={styles.heures}>
@@ -51,9 +52,9 @@ export default function Affectation({ affectation }) {
                                                             </View>
                                                   </View>
                                         </View>
-                                        {!affectation.ActiviteFinie && <TouchableOpacity style={styles.statutIcon} onPress={handleNewCraPress}>
+                                        {/* {!affectation.ActiviteFinie && <TouchableOpacity style={styles.statutIcon} onPress={handleNewCraPress}>
                                                   <AntDesign name="pluscircleo" size={24} color="#777" />
-                                        </TouchableOpacity>}
+                                        </TouchableOpacity>} */}
                               </View>
                               {/* <AffectationDate dateDebut={affectation.dateDebut} dateFin={affectation.dateFin} /> */}
                     </TouchOrView>
@@ -76,13 +77,13 @@ const styles = StyleSheet.create({
           },
           affectationNames: {
                     marginLeft: 10,
-                    width: '85%',
+                    width: '92%',
           },
           activiteName: {
                     color: '#333',
                     fontSize: 16,
                     fontWeight: 'bold',
-                    width: '95%',
+                    width: '100%',
           },
           projetName: {
                     color: '#333',

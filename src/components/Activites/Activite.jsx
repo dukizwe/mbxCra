@@ -3,25 +3,35 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import moment from 'moment';
 import 'moment/locale/fr';
+import { MyFromNow } from '../../functions';
 moment.locale('fr')
 
-export default function Activite({ activite }) {
-          console.log(activite)
+export default function Activite({ activite: dafaultAct, setState}) {
           const navigation = useNavigation()
-          const handleAffectationPress = () => {
-                    navigation.navigate('ViewCra', { activite })
+          const [activite, setActivite] = useState(dafaultAct)
+          const handleActivitePress = () => {
+                    navigation.navigate('ViewCra', { activite, setActivite, setState })
           }
-          
+          const finishedStyles = !activite.ActiviteFinie ? {} : {
+                    backgroundColor: '#ddd'
+          }
+
+          const TouchOrView = (props) => {
+                    if(activite.ActiviteFinie) {
+                              return <View style={{...styles.activite, ...finishedStyles}}>{props.children}</View>
+                    }
+                    return <TouchableOpacity style={{...styles.activite, ...finishedStyles}} onPress={handleActivitePress}>{props.children}</TouchableOpacity>
+          }
           return (
-                    <TouchableOpacity style={styles.activite} onPress={handleAffectationPress}>
+                    <TouchOrView>
                               <View style={styles.activiteNames}>
                                         <Text style={styles.activiteName} numberOfLines={3} >{ activite.Realisation }</Text>
                               </View>
                               <View style={styles.projetDate}>
                                         <Text style={styles.projetActiviteText} numberOfLines={1} >{ activite.Activite }</Text>
-                                        <Text style={styles.projetDateText} numberOfLines={1} >{ moment(activite.DATE_SAISIE_CRA).fromNow() }</Text>
+                                        <Text style={styles.projetDateText} numberOfLines={1} >{ MyFromNow(activite.DATE_SAISIE_CRA) }</Text>
                               </View>
-                    </TouchableOpacity>
+                    </TouchOrView>
           )
 }
 const styles = StyleSheet.create({

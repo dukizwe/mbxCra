@@ -78,14 +78,14 @@ export default function Header() {
                                         <View style={styles.userIcon}>
                                                   <AntDesign name="user" size={20} color="black" />
                                         </View>
-                                        <Text style={styles.username}>{ user.email }</Text>
+                                        <Text style={styles.username}>{ user.username }</Text>
                                         <AntDesign name="caretdown" size={16} color="#777" style={{marginLeft: 10}} />
                               </View>
                     )
           }
           return (<View style={styles.header}>
                     <View style={styles.logoImage}>
-                              <Image source={require('../../../assets/mbx_logo.png')} style={styles.image} />
+                              <Image source={require('../../../assets/icon.png')} style={styles.image} />
                     </View>
                     <Menu placement='bottom' w="200" trigger={(triggerProps) => {return (
                                         <TouchableOpacity {...triggerProps}>

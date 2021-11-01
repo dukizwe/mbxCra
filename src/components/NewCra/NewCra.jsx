@@ -9,7 +9,7 @@ import styles from '../NonPlanifie/styles'
 import { AntDesign } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker'
 import { primaryColor } from '../Welcome/styles';
-import { CraContext } from '../../screens/ViewCraScreen'
+import { CraContext } from '../../context/CraContext'
 import useFetch from '../../hooks/useFecth'
 import { fetchApi, randomInt } from '../../functions'
 import { prependCrasAction } from '../../store/actions/craActions'
@@ -17,24 +17,27 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { crasSeletor } from '../../store/selectors/crasSelector'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { userSelector } from '../../store/selectors/userSelector'
 
-export default function NewCra({ activite }) {
-          console.log(activite)
+export default function NewCra({ activite, setActivite }) {
           const navigation = useNavigation()
           const route = useRoute()
           const toast = useToast()
-          const { affectation } = route.params
+          const { affectation, setAffectation } = route.params
           const dispatch = useDispatch()
           const cras = useSelector(crasSeletor)
+          const user = useSelector(userSelector)
 
           const isView = activite ? true : false // determine if is to view or to add new
 
           const [loading, setLoading] = useState(false)
 
+          const IDActivite = activite ? activite.IDActivite : affectation.IDActivite
+
           const dateToday = isView ? new Date(activite.DATE_SAISIE_CRA) : new Date();
-          const [loadingActivite, selectedActivite, setActivite] = useFetch('http://192.168.43.235:8080/cr_activite/'+affectation?.IDActivite)
-          const [realise, setRealise] = useState(activite?.Realisation)
-          const [reste, setReste] = useState(activite?.RESTE_A_FAIRE)
+          const [loadingActivite, selectedActivite] = useFetch('http://app.mediabox.bi:3140/cr_activite/'+IDActivite)
+          const [realise, setRealise] = useState(activite ? activite.Realisation : '')
+          const [reste, setReste] = useState(activite ? activite.RESTE_A_FAIRE : '')
           const inEdit = useContext(CraContext)?.inEdit
           const fakeheuresDebut = []
           const fakeheuresFin = []
@@ -65,25 +68,73 @@ export default function NewCra({ activite }) {
 
           const [statut, setStatut] = useState(false)
 
-          const isValid = inEdit ? true :  realise != '' && selectedDebut != '' && selectedFin != '' && reste != ''
+          const isValid = realise != '' && selectedDebut != '' && selectedFin != '' && reste != ''
           
           const onSubmit = async () => {
                     setLoading(true)
-                              const timeOut = setTimeout(async () => {
+                              const data = {
+                                        // EMAIL_COLLABO: 'email@gm.com',
+                                        // DATE_CRA: new Date().toJSON().slice(0, 19).replace('T', ' '),
+                                        // DATE_SAISIE_CRA: new Date().toJSON().slice(0, 19).replace('T', ' '),
+                                        ID_COLLABO: user.collaboId,
+                                        ID_ACTIVITE: IDActivite,
+                                        REALISATION: realise,
+                                        HEURE_DEBUT: selectedDebut.toJSON().slice(0, 19).replace('T', ' '),
+                                        HEURE_FIN: selectedFin.toJSON().slice(0, 19).replace('T', ' '),
+                                        RESTE_A_FAIRE: reste,
+                                        ACTIVITE_FINIE: statut
+                              }
+                              if(inEdit) {
                                         try {
-                                                  const activite = {
-                                                            Activite: selectedActivite[0] ? selectedActivite[0].label : 'Activité',
-                                                            DATE_SAISIE_CRA: new Date(),
-                                                            Debut: selectedDebut.toJSON().slice(0, 19).replace('T', ' '),
-                                                            Fin: selectedFin.toJSON().slice(0, 19).replace('T', ' '),
-                                                            IDActivite: affectation?.IDActivite || 2879,
-                                                            ID_CRA: randomInt(5000, 10000),
-                                                            NBR_HEURE_INV: selectedFin.getHours() - selectedDebut.getHours(),
-                                                            RESTE_A_FAIRE: reste,
-                                                            Realisation: realise
+                                                  let activiteResponse = await fetchApi('http://app.mediabox.bi:3140/cras/'+activite.ID_CRA, {
+                                                            method: 'PUT',
+                                                            body: JSON.stringify(data),
+                                                            headers: {
+                                                                      'Content-Type': 'application/json'
+                                                            }
+                                                  });
+                                                  activiteResponse.Activite = selectedActivite[0] ? selectedActivite[0].label : 'Activité',
+                                                  activiteResponse.ActiviteFinie = statut
+                                                  if(setActivite) {
+                                                            setActivite(activiteResponse)
                                                   }
-                                                  await AsyncStorage.setItem('affectations', JSON.stringify({ cras: [activite, ...cras] }))
-                                                  dispatch(prependCrasAction(activite))
+                                                  await AsyncStorage.removeItem('cras')
+                                                  dispatch(prependCrasAction(activiteResponse))
+                                                  setLoading(false)
+                                                  navigation.navigate('CraTab')
+                                                  toast.show({
+                                                            title: "Modification du CRA réussi",
+                                                            placement: "bottom",
+                                                            status: 'success',
+                                                            duration: 2000
+                                                  })
+                                        } catch (error) {
+                                                  console.log(error)
+                                                  setLoading(false)
+                                                  toast.show({
+                                                            title: "CRA non modifié",
+                                                            placement: "bottom",
+                                                            status: 'error',
+                                                            duration: 2000
+                                                  })
+                                        }
+                              } else {
+                                        try {
+                                                  let activiteResponse = await fetchApi('http://app.mediabox.bi:3140/Enregistre_cra', {
+                                                            method: 'POST',
+                                                            body: JSON.stringify(data),
+                                                            headers: {
+                                                                      'Content-Type': 'application/json'
+                                                            }
+                                                  });
+                                                  activiteResponse.Activite = selectedActivite[0] ? selectedActivite[0].label : 'Activité',
+                                                  activiteResponse.DATE_SAISIE_CRA = new Date()
+                                                  activiteResponse.ActiviteFinie = statut
+                                                  if(statut && setAffectation) {
+                                                            setAffectation(aff => ({...aff, ActiviteFinie: 1}))
+                                                  }
+                                                  await AsyncStorage.setItem('cras', JSON.stringify({ cras: [activiteResponse, ...cras] }))
+                                                  dispatch(prependCrasAction(activiteResponse))
                                                   setLoading(false)
                                                   navigation.navigate('CraTab')
                                                   toast.show({
@@ -93,7 +144,7 @@ export default function NewCra({ activite }) {
                                                             duration: 2000
                                                   })
                                         } catch (error) {
-                                                  console.log(error)
+                                                  console.log(error, data)
                                                   setLoading(false)
                                                   toast.show({
                                                             title: "CRA non ajouté",
@@ -102,48 +153,22 @@ export default function NewCra({ activite }) {
                                                             duration: 2000
                                                   })
                                         }
-                              }, 2000)
-                              return false
-                              const data = {
-                                        ID_COLLABO: 1,
-                                        EMAIL_COLLABO: 'email@gm.com',
-                                        DATE_CRA: new Date().toJSON().slice(0, 19).replace('T', ' '),
-                                        DATE_SAISIE_CRA: new Date().toJSON().slice(0, 19).replace('T', ' '),
-                                        ID_ACTIVITE: affectation?.IDActivite,
-                                        REALISATION: realise,
-                                        HEURE_DEBUT: selectedDebut.toJSON().slice(0, 19).replace('T', ' '),
-                                        HEURE_FIN: selectedFin.toJSON().slice(0, 19).replace('T', ' '),
-                                        RESTE_A_FAIRE: reste,
-                                        ACTIVITE_FINIE: statut,
-                                        NBR_HEURE_INV: selectedFin.getHours() - selectedDebut.getHours(),
-                                        IS_WEEK_END: 0,
-                                        TRAITE: 1
                               }
-                    try {
-                              const activiteResponse = await fetchApi('http://app.mediabox.bi:3140/Enregistre_cra', {
-                                        method: 'POST',
-                                        body: JSON.stringify(data),
-                                        headers: {
-                                                  'Content-Type': 'application/json'
-                                        }
-                              });
-                              setLoading(false)
-                              navigation.navigate('CraTab')
-                              toast.show({
-                                        title: "Ajout du CRA réussi",
-                                        placement: "bottom",
-                                        status: 'success',
-                                        duration: 2000
-                              })
-                    } catch (error) {
-                              console.log(error, data)
-                              setLoading(false)
-                              toast.show({
-                                        title: "CRA non ajouté",
-                                        placement: "bottom",
-                                        status: 'error',
-                                        duration: 2000
-                              })
+          }
+          /**
+           * Determiner si on peut activer ou non le bouton d'envoi
+           * @returns { bool }
+           */
+          const canIDisabled = () => {
+                    if(isView) {
+                              if(inEdit && isValid) {
+                                        return false
+                              }
+                              return true
+                    } else {
+                              if(!isValid) {
+                                        return true
+                              }
                     }
           }
           return (
@@ -242,7 +267,7 @@ export default function NewCra({ activite }) {
                                         </HStack>
                                         <View style={styles.actions}>
                                                   <Button
-                                                            isDisabled={!isValid}
+                                                            isDisabled={canIDisabled()}
                                                             isLoading={loading}
                                                             onPress={onSubmit}
                                                             size='lg' w="full" mt={10}

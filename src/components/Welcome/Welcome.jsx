@@ -15,12 +15,12 @@ export default function Welcome() {
                                         <View style={styles.card}>
                                                   <Center flex={1}>
                                                             <View style={styles.imageContainer}>
-                                                                      <Image source={require('../../../assets/mbx_logo.jpg')} style={styles.image}/>
+                                                                      <Image source={require('../../../assets/icon.png')} style={styles.image}/>
                                                             </View>
-                                                            <Heading mt={5} mb={5} style={{ fontSize: 25}} >App name</Heading>
-                                                            <Text style={styles.wrapText}>
-                                                                      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Libero 
-                                                            </Text>
+                                                            <Heading mt={5} mb={5} style={{ fontSize: 25}} >Compte Rendu d'Activités</Heading>
+                                                            {/* <Text style={styles.wrapText}>
+                                                                      Compte Rendu d'Activités
+                                                            </Text> */}
                                                             <View style={styles.actions}>
                                                                       <Button onPress={goToLogin} size='lg' w="full" style={styles.login} py={4} backgroundColor={primaryColor} _text={{ fontSize: 18}} borderRadius={10}>Se connecter</Button>
                                                                       <Button size='lg' w="full" style={styles.register} variant='outline' py={4} _text={{ color: '#333', fontSize: 18}}  borderColor={primaryColor} borderRadius={10}>S'inscrire</Button>

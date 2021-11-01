@@ -1,33 +1,33 @@
 {
-  "expo": {
-    "name": "mbxCla",
-    "slug": "mbxCla",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/mbx_logo.png",
-    "splash": {
-      "image": "./assets/mbx_splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#393A3C"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.mbx.cra"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
-  }
+          "expo": {
+                    "name": "CRA mediabox",
+                    "slug": "CRA",
+                    "version": "1.0.0",
+                    "orientation": "portrait",
+                    "icon": "./assets/logo.png",
+                    "splash": {
+                              "image": "./assets/mbx_splash.png",
+                              "resizeMode": "contain",
+                              "backgroundColor": "#393A3C"
+                    },
+                    "updates": {
+                              "fallbackToCacheTimeout": 0
+                    },
+                    "assetBundlePatterns": [
+                              "**/*"
+                    ],
+                    "ios": {
+                              "supportsTablet": true
+                    },
+                    "android": {
+                              "adaptiveIcon": {
+                                        "foregroundImage": "./assets/mbx_logo.png",
+                                        "backgroundColor": "#FFFFFF"
+                              },
+                              "package": "com.mbx.cra"
+                    },
+                    "web": {
+                              "favicon": "./assets/logo.png"
+                    }
+          }
 }

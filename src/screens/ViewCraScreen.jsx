@@ -5,6 +5,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import NewCra from '../components/NewCra/NewCra'
 import { primaryColor } from '../components/Welcome/styles';
 import { Modal, Button, useToast } from 'native-base';
+import { CraContext } from '../context/CraContext';
+import { fetchApi } from '../functions';
+import { useDispatch, useSelector } from 'react-redux';
+import { crasSeletor } from '../store/selectors/crasSelector';
+import { addCrasAction } from '../store/actions/craActions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const ViewCraHeader = () => {
           const navigation = useNavigation()
@@ -14,14 +20,17 @@ export const ViewCraHeader = () => {
                               <MaterialIcons name="arrow-back" size={26} color="black" style={{ padding: 10, paddingLeft: 0}} />
                     </TouchableOpacity>
                     <View style={styles.actions}>
-                              {!inEdit && <TouchableOpacity style={styles.editAction} onPress={() => setInEdit(true)}>
+                              {!inEdit &&
+                              <>
+                              <TouchableOpacity style={styles.editAction} onPress={() => setInEdit(true)}>
                                         <MaterialIcons name="edit" size={24} color="#fff" />
                                         <Text style={styles.editText}>Editer</Text>
-                              </TouchableOpacity>}
+                              </TouchableOpacity>
                               <TouchableOpacity style={styles.deleteAction} onPress={() => setShowDeleteModal(true)}>
                                         <MaterialIcons name="delete" size={24} color="#fff" />
                                         <Text style={styles.deleteText}>Supprimer</Text>
                               </TouchableOpacity>
+                              </>}
                     </View>
           </View>
 }
@@ -32,16 +41,37 @@ export const DeleteModal = () => {
           const navigation = useNavigation()
           const toast = useToast()
           const { activite } = route.params
+          const [loading, setLoading] = useState(false)
+          const cras = useSelector(crasSeletor)
+          const dispatch = useDispatch()
           
-          const confirmDelete = () => {
+          const confirmDelete = async () => {
+                    setLoading(true)
+                    try {
+                              let deleteActive = await fetchApi('http://app.mediabox.bi:3140/cras/'+activite.ID_CRA, {
+                                        method: 'DELETE',
+                              });
+                              const newCras = cras.filter(cra => cra.ID_CRA != activite.ID_CRA)
+                              await AsyncStorage.setItem('cras', JSON.stringify({ cras: newCras }))
+                              dispatch(addCrasAction(newCras))
+                              navigation.goBack()
+                              toast.show({
+                                        title: "Suppression CRA réussi",
+                                        placement: "bottom",
+                                        status: 'success',
+                                        duration: 2000
+                              })
+                    } catch(error) {
+                              console.log(error)
+                              toast.show({
+                                        title: "Impossible de supprimer le CRA",
+                                        placement: "bottom",
+                                        status: 'error',
+                                        duration: 2000
+                              })
+                    }
+                    setLoading(false)
                     setShowDeleteModal(false)
-                    navigation.goBack()
-                    toast.show({
-                              title: "Suppression réussi",
-                              placement: "bottom",
-                              status: 'success',
-                              duration: 2000
-                    })
           }
 
           return (
@@ -50,7 +80,7 @@ export const DeleteModal = () => {
                                         <Modal.CloseButton />
                                         <Modal.Header>Supprimer le CRA ?</Modal.Header>
                                         <Modal.Body>
-                                                  {activite.realisation}
+                                                  {activite.Realisation}
                                         </Modal.Body>
                                         <Modal.Footer>
                                                   <Button.Group space={2}>
@@ -60,7 +90,7 @@ export const DeleteModal = () => {
                                                                       onPress={() => {
                                                                                 setShowDeleteModal(false)
                                                                       }}>Annuler</Button>
-                                                            <Button onPress={confirmDelete} backgroundColor={primaryColor}>Supprimer</Button>
+                                                            <Button isLoading={loading} onPress={confirmDelete} backgroundColor={primaryColor}>Supprimer</Button>
                                                   </Button.Group>
                                         </Modal.Footer>
                               </Modal.Content>
@@ -68,17 +98,15 @@ export const DeleteModal = () => {
           )
 }
 
-export const CraContext = createContext()
-
 export default function ViewCraScreen() {
           const route = useRoute()
-          const { activite } = route.params
+          const { activite, setActivite, setState } = route.params
           const [inEdit, setInEdit] = useState(false)
           const [showDeleteModal, setShowDeleteModal] = useState(false)
           return (
                     <CraContext.Provider value={{ inEdit, setInEdit, showDeleteModal, setShowDeleteModal }}>
                               <ViewCraHeader />
-                              <NewCra activite={activite} />
+                              <NewCra activite={activite} setActivite={setActivite} setState={setState} />
                               <DeleteModal />
                     </CraContext.Provider>
           )
