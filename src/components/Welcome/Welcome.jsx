@@ -17,7 +17,7 @@ export default function Welcome() {
                                                             <View style={styles.imageContainer}>
                                                                       <Image source={require('../../../assets/icon.png')} style={styles.image}/>
                                                             </View>
-                                                            <Heading mt={5} mb={5} style={{ fontSize: 25}} >Compte Rendu d'Activités</Heading>
+                                                            <Heading mt={5} mb={5} style={{ fontSize: 25}} >CRA</Heading>
                                                             {/* <Text style={styles.wrapText}>
                                                                       Compte Rendu d'Activités
                                                             </Text> */}
