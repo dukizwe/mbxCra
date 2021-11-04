@@ -25,12 +25,8 @@ export const addAffectationsAction = (affectations) => {
 
 export const loadAffectations = (collaboId) => async (dispatch) => {
           try {
-                    const fetchedAffectations = await fetchApi('http://app.mediabox.bi:3140/Afficher_affectation/'+collaboId)
-                    await AsyncStorage.setItem('affectations', JSON.stringify({ affectations: fetchedAffectations }))
-                    return {
-                              type: ADD_AFFECTATIOS_ACTION,
-                              payload: fetchedAffectations
-                    }
+                    const fetchedAffectations = await fetchApi('http://127.0.0.1:8080/Afficher_affectation/'+collaboId)
+                    dispatch(addAffectationsAction(fetchedAffectations))
           } catch (error) {
                     console.log(error)
           }

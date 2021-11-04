@@ -22,7 +22,7 @@ export default function Activites() {
                               const defaultCras = defaultCrasString ? JSON.parse(defaultCrasString)?.cras : []
                               if(!defaultCras || defaultCras.length === 0) {
                                         // fetch cras
-                                        const response = await fetch('http://app.mediabox.bi:3140/Afficher_cra/'+user.collaboId)
+                                        const response = await fetch('http://localhost:8080/Afficher_cra/'+user.collaboId)
                                         const fetchedCras = await response.json()
                                         if(response.ok) {
                                                   await AsyncStorage.setItem('cras', JSON.stringify({ cras: fetchedCras }))

@@ -47,6 +47,18 @@ const styles = StyleSheet.create({
                     fontWeight: 'bold',
                     fontSize: 20,
                     marginLeft: 5
+          },
+          largeUser: {
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderBottomColor: '#ddd',
+                    borderBottomWidth: 1
+          },
+          userNames: {
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                    marginTop: 5
           }
 })
 

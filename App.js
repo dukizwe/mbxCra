@@ -1,7 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
-import { NativeBaseProvider } from 'native-base';
+import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { NativeBaseProvider } from 'native-base';
 import { Provider } from 'react-redux';
 import AppContainer from './src/AppContainer';
 import { store } from './src/store'

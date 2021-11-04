@@ -78,7 +78,6 @@ export default function Header() {
                                         <View style={styles.userIcon}>
                                                   <AntDesign name="user" size={20} color="black" />
                                         </View>
-                                        <Text style={styles.username}>{ user.username }</Text>
                                         <AntDesign name="caretdown" size={16} color="#777" style={{marginLeft: 10}} />
                               </View>
                     )
@@ -94,6 +93,13 @@ export default function Header() {
                                         )
                               }}
                               >
+                              <Menu.Item style={styles.largeUser}>
+                                        <View style={styles.largeUserIcon}>
+                                                  <AntDesign name="user" size={40} color="black" />
+                                        </View>
+                                        <Text style={styles.userNames}>{user.fname} {user.lname}</Text>
+                                        <Text style={styles.userEmail}>{user.username}</Text>
+                              </Menu.Item>
                               <Menu.Item onPress={() => setShowPasswordModal(true)}>Changer le mot de passe</Menu.Item>
                               <Menu.Item onPress={logout}>Déconnexion</Menu.Item>
                     </Menu>

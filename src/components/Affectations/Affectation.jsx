@@ -13,7 +13,7 @@ export default function Affectation({ affectation: defaultAFf }) {
                     !affectation.ActiviteFinie && handleNewCraPress()
           }
           const handleNewCraPress = () => {
-                    navigation.navigate('NewCla', { affectation, setAffectation })
+                    navigation.navigate('AffectationView', { affectation, setAffectation })
           }
 
           const decDate = date => {
@@ -43,8 +43,8 @@ export default function Affectation({ affectation: defaultAFf }) {
                                                   <Text style={styles.activiteName} numberOfLines={1} >{ affectation.DescActivite }</Text>
                                                   <View style={styles.affectationsDescription}>
                                                             <View style={styles.projetHeure}>
-                                                                      <Text style={styles.projetName} numberOfLines={1} >{ affectation.Taches } |</Text>
-                                                                      <Text style={styles.nbreHeures} numberOfLines={1} > { affectation.NbHeureEstimees } heures</Text>
+                                                                      <Text style={styles.projetName} numberOfLines={1} >{ affectation.Taches }</Text>
+                                                                      <Text style={styles.nbreHeures} numberOfLines={1} > | { affectation.NbHeureEstimees } </Text>
                                                             </View>
                                                             <View style={styles.heures}>
                                                                       <Text style={styles.date} numberOfLines={1} >du { decDate(affectation.DateDebutAff) } au</Text>
