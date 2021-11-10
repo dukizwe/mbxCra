@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState, useRef } from 'react'
+import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View, FlatList } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import styles from './styles';
 import { AntDesign } from '@expo/vector-icons'; 
@@ -14,43 +14,44 @@ import { fetchApi } from '../../functions'
 import { useSelector, useDispatch } from 'react-redux'
 import { userSelector } from '../../store/selectors/userSelector'
 import { affectationsSeletor } from '../../store/selectors/affectationsSelector';
+import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { prependAffectationsAction } from '../../store/actions/affectationsActions';
+import { Modalize } from 'react-native-modalize';
+import { Portal } from 'react-native-portalize';
 
 
-export default function NonPlanifieForm() {
+export default function NonPlanifie() {
           const toast = useToast()
           const navigation = useNavigation()
           const [loading, setLoading] = useState(false)
           const user = useSelector(userSelector)
           const dispatch = useDispatch()
           const affectations = useSelector(affectationsSeletor)
+
           
           // projet select
-          const [openProjet, setOpenProjet] = useState(false);
+          const projectModalizeRef = useRef(null);
           const [projet, setProjet] = useState(null);
-          const [projects, setProjects] = useState([])
-          const [loadingProjets, setLoadingProjets] = useState(true)
-          const [loadingTache, setLoadingTache] = useState(false)
-          useEffect(() => {
-                    (async function() {
-                              const projets = await fetchApi('http://app.mediabox.bi:3140/projet_get');
-                              setLoadingProjets(false)
-                              setProjects(projets)
-                    })()
-          }, [])
-          // tache select
-          const [openTach, setOpenTach] = useState(false);
-          const [tacheValue, setTacheValue] = useState(null); 
-          const [taches, setTacheItems] = useState([])
-          const fetchTaches = async () => {
-                    if(projet) {
-                              setLoadingTache(true)
-                              const taches = await fetchApi(`http://app.mediabox.bi:3140/Taches_get/${projet}`);
-                              setTacheItems(taches)
-                              setLoadingTache(false)
-                    }
+          const openProjectModalize = () => {
+                    projectModalizeRef.current?.open();
+          };
+          const setSelectedProject = (project) => {
+                    projectModalizeRef.current?.close();
+                    setProjet(project)
           }
+
+          // tache select
+          const tacheModalizeRef = useRef(null);
+          const [tacheValue, setTacheValue] = useState(null); 
+          const openTacheModalize = () => {
+                    tacheModalizeRef.current?.open();
+          };
+          const setSelectedTache = (tache) => {
+                    tacheModalizeRef.current?.close();
+                    setTacheValue(tache)
+          }
+
           // dateDebut datePicker
           const [dateDebut, setDateDebut] = useState(new Date()); 
           const [showDateDebut, setShowDateDebut] = useState(false);
@@ -80,7 +81,7 @@ export default function NonPlanifieForm() {
                     setLoading(true)
                     try {
                               const affectationData = {
-                                        IDTache: tacheValue,
+                                        IDTache: tacheValue.value,
                                         DescActivite: activite,
                                         DateDebutAct: new Date(dateDebut).toJSON().slice(0, 19).replace('T', ' '),
                                         DateFinPrev: new Date(dateFin).toJSON().slice(0, 19).replace('T', ' '),
@@ -89,7 +90,7 @@ export default function NonPlanifieForm() {
                                         Commentaires: comment,
                                         IDEmploye: user.collaboId,
                               }
-                              const newAffectation = await fetchApi('http://app.mediabox.bi:3140/Enregistre_Activite', {
+                              const newAffectation = await fetchApi('http://192.168.43.235:8080/Enregistre_Activite', {
                                         method: 'POST',
                                         body: JSON.stringify(affectationData),
                                         headers: {
@@ -124,53 +125,137 @@ export default function NonPlanifieForm() {
                     }
           }
 
+          const ProjectsList = () => {
+                    const [projects, setProjects] = useState([])
+                    const [loadingProjets, setLoadingProjets] = useState(true)
+                    const [searchProject, setSearchProject] = useState('')
+                    const [filtered, setFiltered] = useState([])
+                    const componentMounted = useRef(true)
+          
+                    useEffect(() => {
+                              (async function() {
+                                        const projets = await fetchApi('http://app.mediabox.bi:3140/projet_get');
+                                        if(componentMounted.current) {
+                                                  setLoadingProjets(false)
+                                                  setProjects(projets)
+                                        }
+                              })()
+                              return () => {
+                                        componentMounted.current = false;
+                              }
+                    }, [])
+                    useEffect(() => {
+                              if(searchProject != '') {
+                                        const filtered = projects.filter(project => {
+                                                  return project.label.toLowerCase().includes(searchProject.toLowerCase())
+                                        })
+                                        setFiltered(filtered)
+                              }
+                    }, [searchProject])
+                    const itemsToShow = searchProject == '' ? projects : filtered
+                    return (
+                              <View style={styles.modalContent}>
+                                        <View>
+                                                  <Input value={searchProject} onChangeText={(value) => setSearchProject(value)} mt={2} placeholder="Chercher un projet" size='lg' py={2} InputLeftElement={
+                                                            <Icon
+                                                                      as={<Feather name="search" size={24} color="black" />}
+                                                                      size={5}
+                                                                      ml="2"
+                                                                      color="muted.400"
+                                                            />}
+                                                  />
+                                        </View>
+                                        <View style={styles.modalList}>
+                                                  {itemsToShow.map(project => {
+                                                            return <TouchableOpacity onPress={() => setSelectedProject(project)} style={styles.modalItem} key={project.value}>
+                                                                                <FontAwesome name="dot-circle-o" size={20} color="#777" />
+                                                                                <Text numberOfLines={1} style={styles.modalText}>{project.label}</Text>
+                                                                      </TouchableOpacity>
+                                                  })}
+                                        </View>
+                              </View>
+                    )
+          }
+
+          const TacheList = () => {
+                    const [taches, setTacheItems] = useState([])
+                    const [loadingTache, setLoadingTache] = useState(false)
+                    const [searchTache, setSearchTache] = useState('')
+                    const [filteredTaches, setFilteredTaches] = useState([])
+                    const componentMounted = useRef(true)
+          
+                    useEffect(() => {
+                              if(projet) {
+                                        (async function() {
+                                                  setLoadingTache(true)
+                                                  const taches = await fetchApi(`http://app.mediabox.bi:3140/Taches_get/${projet.value}`);
+                                                  if(componentMounted.current) {
+                                                            setTacheItems(taches)
+                                                            setLoadingTache(false)
+                                                  }
+                                        })()
+                                        return () => {
+                                                  componentMounted.current = false;
+                                        }
+                              }
+                    }, [projet])
+                    useEffect(() => {
+                              if(searchTache != '') {
+                                        const filtered = taches.filter(tahce => {
+                                                  return tahce.label.toLowerCase().includes(searchTache.toLowerCase())
+                                        })
+                                        setFilteredTaches(filtered)
+                              }
+                    }, [searchTache])
+                    const itemsToShow = searchTache == '' ? taches : filteredTaches
+                    return (
+                              <View style={styles.modalContent}>
+                                        {!projet ? <View style={{height: '100%', alignItems: 'center', justifyContent: 'center', alignContent: 'center'}}>
+                                                  <AntDesign name="warning" size={24} color="black" />
+                                                  <Text style={{fontSize: 16}}>Veuillez sélectionné le projet</Text>
+                                                  </View>
+                                                  :
+                                        <>
+                                        <View>
+                                                  <Input value={searchTache} onChangeText={(value) => setSearchTache(value)} mt={2} placeholder="Chercher une tâche" size='lg' py={2} InputLeftElement={
+                                                            <Icon
+                                                                      as={<Feather name="search" size={24} color="black" />}
+                                                                      size={5}
+                                                                      ml="2"
+                                                                      color="muted.400"
+                                                            />}
+                                                  />
+                                        </View>
+                                        <View style={styles.modalList}>
+                                                  {itemsToShow.map(tache => {
+                                                            return <TouchableOpacity onPress={() => setSelectedTache(tache)} style={styles.modalItem} key={tache.value}>
+                                                                                <FontAwesome name="dot-circle-o" size={20} color="#777" />
+                                                                                <Text numberOfLines={1} style={styles.modalText}>{tache.label}</Text>
+                                                                      </TouchableOpacity>
+                                                  })}
+                                        </View>
+                                        </>}
+                              </View>
+                    )
+          }
+
           return (
                     <NativeBaseProvider>
                               <ScrollView style={styles.container}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', alignContent: 'center' }}>
                                                 <Text style={styles.label}>Projet</Text>
-                                                {loadingProjets && <ActivityIndicator color="#007BFF" isLoading={loadingProjets}/>}
                                         </View>
-                                        <DropDownPicker
-                                                  open={openProjet}
-                                                  value={projet}
-                                                  items={projects}
-                                                  setOpen={setOpenProjet}
-                                                  setValue={setProjet}
-                                                  setItems={setProjects}
-                                                  placeholder="Selectionner un projet"
-                                                  style={styles.selectContainer}
-                                                  showArrowIcon={true}
-                                                  ArrowUpIconComponent={({ style }) => <AntDesign name="caretup" size={16} color="#777" />}
-                                                  ArrowDownIconComponent={({ style }) => <AntDesign name="caretdown" size={16} color="#777" />}
-                                                  dropDownContainerStyle={styles.dropdownBox}
-                                                  itemSeparator={true}
-                                                  itemSeparatorStyle={{ opacity: 0.1}}
-                                                  listItemLabelStyle={{ fontSize: 16}}
-                                                  onChangeValue={() => fetchTaches()}
-                                                  disabled={loadingProjets}
-                                        />
+                                        <TouchableOpacity onPress={openProjectModalize} style={styles.openModalize}>
+                                                  <Text style={styles.openModalizeLabel} numberOfLines={1}>{projet ? projet.label :  'Selectionner un projet'}</Text>
+                                                  <AntDesign name="caretdown" size={16} color="#777" />
+                                        </TouchableOpacity>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', alignContent: 'center' }}>
                                                 <Text style={styles.label}>Tâche</Text>
-                                                {loadingTache && <ActivityIndicator color="#007BFF" isLoading={loadingTache}/>}
                                         </View>
-                                        <DropDownPicker
-                                                  open={openTach}
-                                                  value={tacheValue}
-                                                  items={taches}
-                                                  setOpen={setOpenTach}
-                                                  setValue={setTacheValue}
-                                                  setItems={setTacheItems}
-                                                  placeholder="Selectionner une tâche"
-                                                  style={{...styles.selectContainer, zIndex: 1}}
-                                                  showArrowIcon={true}
-                                                  ArrowUpIconComponent={({ style }) => <AntDesign name="caretup" size={16} color="#777" />}
-                                                  ArrowDownIconComponent={({ style }) => <AntDesign name="caretdown" size={16} color="#777" />}
-                                                  dropDownContainerStyle={styles.dropdownBox}
-                                                  itemSeparator={true}
-                                                  itemSeparatorStyle={{ opacity: 0.1}}
-                                                  listItemLabelStyle={{ fontSize: 16}}
-                                        />
+                                        <TouchableOpacity onPress={openTacheModalize} style={styles.openModalize}>
+                                                  <Text style={styles.openModalizeLabel} numberOfLines={1}>{tacheValue ? tacheValue.label :  'Selectionner une tâche'}</Text>
+                                                  <AntDesign name="caretdown" size={16} color="#777" />
+                                        </TouchableOpacity>
                                         <Input value={activite} onChangeText={(value) => setActivite(value)} mt={2} placeholder="Activité" size='lg' py={2} InputLeftElement={
                                                   <Icon
                                                             as={<Feather name="activity" size={24} color="black" />}
@@ -241,6 +326,16 @@ export default function NonPlanifieForm() {
                                                             >Enregistrer</Button>
                                         </View>
                               </ScrollView>
+                              <Portal>
+                                        <Modalize ref={projectModalizeRef}  >
+                                                  <ProjectsList />
+                                        </Modalize>
+                              </Portal>
+                              <Portal>
+                                        <Modalize ref={tacheModalizeRef}  >
+                                                  <TacheList />
+                                        </Modalize>
+                              </Portal>
                     </NativeBaseProvider>
                     )
 }

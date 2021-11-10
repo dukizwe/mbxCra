@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import Activites from '../../components/Activites/Activites'
+import React, { useState } from 'react'
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons'; 
 import { Input, Menu } from 'native-base';
+import Affectations from '../../components/Affectations/Affectations';
+import AddButton from '../../components/AddButton/AddButton';
 
-export default function CraTab() {
+export default function AffectationsScreen() {
           const [search, setSearch] = useState('')
-          return (
+          return (<>
                     <View style={styles.container}>
                               <View style={styles.titleSearch}>
-                                        <Text style={styles.other}>Mes CRA</Text>
+                                        <Text style={styles.title}>Mes affectations</Text>
                                         <Menu placement='left' style={styles.searchMenu} w="300" trigger={(triggerProps) => {return (
                                                             <TouchableOpacity style={styles.searchButton} {...triggerProps}>
                                                                       <AntDesign name="search1" size={24} color="black" />
@@ -21,18 +22,18 @@ export default function CraTab() {
                                                             <Input autoFocus style={styles.searchInput}  value={search} onChangeText={(value) => setSearch(value)} mt={2} placeholder="Tapez ici" size='lg' py={2} />
                                                   </Menu.Item>
                                         </Menu>
+                                        
                               </View>
-                              <Activites />
+                              <Affectations />
+                              <AddButton />
                     </View>
-          )
+          </>)
 }
-
 
 const styles = StyleSheet.create({
           container: {
                     backgroundColor: '#fff',
                     height: '100%',
-                    // marginTop: StatusBar.currentHeight
           },
           titleSearch: {
                     flexDirection: 'row',
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
                     alignItems: 'center',
                     alignContent: 'center',
           },
-          other: {
+          title: {
                     color: '#333',
                     fontSize: 20,
                     fontWeight: 'bold',
@@ -48,15 +49,6 @@ const styles = StyleSheet.create({
           },
           searchButton: {
                     padding: 20
-          },
-          other: {
-                    color: '#333',
-                    paddingTop: 20,
-                    paddingBottom: 20,
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                    paddingLeft: 15,
-                    paddingRight: 15
           },
           input: {
                     borderBottomWidth: 2,

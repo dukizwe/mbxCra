@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity, Image, TouchableNativeFeedback } from 'react-native'
 import { Feather } from '@expo/vector-icons'
-import { AntDesign } from '@expo/vector-icons';
 import styles from './styles';
 import { Button, Menu, Modal, Input, Icon } from 'native-base';
 import { primaryColor } from '../Welcome/styles';
@@ -9,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userSelector } from '../../store/selectors/userSelector';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setUserAction } from '../../store/actions/userActions';
+import { useNavigation } from '@react-navigation/core';
 
 const PasswordModal = ({ showPasswordModal, setShowPasswordModal }) => {
           const changePassword = () => {
@@ -65,6 +65,7 @@ export default function Header() {
           const [showPasswordModal, setShowPasswordModal] = useState(false)
           const user = useSelector(userSelector)
           const dispatch = useDispatch()
+          const navigation = useNavigation()
 
           const logout = async () => {
                     await AsyncStorage.removeItem('user')
@@ -86,7 +87,16 @@ export default function Header() {
                     <View style={styles.logoImage}>
                               <Image source={require('../../../assets/icon.png')} style={styles.image} />
                     </View>
-                    <Menu placement='bottom' w="200" trigger={(triggerProps) => {return (
+                    <TouchableNativeFeedback
+                              accessibilityRole="button"
+                              background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}
+                              onPress={() => navigation.openDrawer()}
+                    >
+                              <View style={{width: 30, height: 30, alignItems: 'center', alignContent: 'center'}}>
+                                        <Feather name="menu" size={24} color="black" />
+                              </View>
+                    </TouchableNativeFeedback>
+                    {/* <Menu placement='bottom' w="200" trigger={(triggerProps) => {return (
                                         <TouchableOpacity {...triggerProps}>
                                                   <ConnectedUser />
                                         </TouchableOpacity>
@@ -102,7 +112,7 @@ export default function Header() {
                               </Menu.Item>
                               <Menu.Item onPress={() => setShowPasswordModal(true)}>Changer le mot de passe</Menu.Item>
                               <Menu.Item onPress={logout}>Déconnexion</Menu.Item>
-                    </Menu>
+                    </Menu> */}
                     <PasswordModal showPasswordModal={showPasswordModal} setShowPasswordModal={setShowPasswordModal} />
           </View>)
 }

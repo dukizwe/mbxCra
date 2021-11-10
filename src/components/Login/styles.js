@@ -1,9 +1,10 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
 
+const { width, height } = Dimensions.get('window')
 const styles = StyleSheet.create({
           card: {
                     width: '100%',
-                    height: '70%',
+                    height: height / 1.5,
                     borderRadius: 15,
                     backgroundColor: '#fff',
                     shadowColor: '#000',

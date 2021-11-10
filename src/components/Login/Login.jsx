@@ -1,6 +1,6 @@
 import { Center, Heading, Icon, Input, NativeBaseProvider, Button, useToast } from 'native-base'
 import React, { useState } from 'react'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import styles from './styles'
 import { MaterialIcons } from "@expo/vector-icons"
 import { primaryColor } from '../Welcome/styles'
@@ -21,7 +21,7 @@ export default function Login() {
           const submitForm = async () => {
                     setLoading(true)
                     try  {
-                              const { user } = await fetchApi('http://localhost:8080/login', {
+                              const { user } = await fetchApi('http://192.168.43.235:8080/login', {
                                         method: 'POST',
                                         body: JSON.stringify({email, password}),
                                         headers: {

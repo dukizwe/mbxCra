@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect, useState }  from "react";
 import { ActivityIndicator, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import UserNavigator from './routes/UserNavigator'
+import RootNavigator from './routes/RootNavigator'
 import LoginScreen from "./screens/LoginScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import { setUserAction } from "./store/actions/userActions";
@@ -31,8 +31,7 @@ export default function AppContainer() {
                     </View> :
                     <NavigationContainer>
                               {user ?
-                                        <UserNavigator />
-                              :
+                                        <RootNavigator />:
                               <>
                               <Stack.Navigator>
                                         <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false}}/>

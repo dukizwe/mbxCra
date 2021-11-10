@@ -10,15 +10,15 @@ export default function Affectation({ affectation: defaultAFf }) {
           const navigation = useNavigation()
           // affectation.ActiviteFinie = 0
           const handleAffectationPress = () => {
-                    !affectation.ActiviteFinie && handleNewCraPress()
+                    !affectation.ActiviteFinie && navigation.navigate('AffectationView', { affectation, setAffectation })
           }
           const handleNewCraPress = () => {
-                    navigation.navigate('AffectationView', { affectation, setAffectation })
+                    navigation.navigate('NewCra', { affectation, setAffectation })
           }
 
           const decDate = date => {
                     const newDate = new Date(date)
-                    return newDate.getDate() + '/' + newDate.getMonth()
+                    return newDate.getDate() + '/' + (parseInt(newDate.getMonth(), 10)+1)
           }
           const finishedStyles = !affectation.ActiviteFinie ? {} : {
                     backgroundColor: '#ddd'
@@ -47,15 +47,15 @@ export default function Affectation({ affectation: defaultAFf }) {
                                                                       <Text style={styles.nbreHeures} numberOfLines={1} > | { affectation.NbHeureEstimees } </Text>
                                                             </View>
                                                             <View style={styles.heures}>
-                                                                      <Text style={styles.date} numberOfLines={1} >du { decDate(affectation.DateDebutAff) } au</Text>
+                                                                      <Text style={styles.date} numberOfLines={1} >{ decDate(affectation.DateDebutAff) } -</Text>
                                                                       <Text style={styles.date} numberOfLines={1} > { decDate(affectation.DateFin) }</Text>
                                                             </View>
                                                   </View>
                                         </View>
-                                        {/* {!affectation.ActiviteFinie && <TouchableOpacity style={styles.statutIcon} onPress={handleNewCraPress}>
-                                                  <AntDesign name="pluscircleo" size={24} color="#777" />
-                                        </TouchableOpacity>} */}
                               </View>
+                              {!affectation.ActiviteFinie && <TouchableOpacity style={styles.plusIcon} onPress={handleNewCraPress}>
+                                        <AntDesign name="pluscircleo" size={24} color="#777" />
+                              </TouchableOpacity>}
                               {/* <AffectationDate dateDebut={affectation.dateDebut} dateFin={affectation.dateFin} /> */}
                     </TouchOrView>
           )
@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
                     backgroundColor: '#F2F5FE',
                     padding: 20,
                     paddingLeft: 10,
+                    paddingRight: 0,
                     borderRadius: 10,
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -74,16 +75,16 @@ const styles = StyleSheet.create({
           circleName: {
                     flexDirection: 'row',
                     alignItems: 'center',
+                    flex: 1
           },
           affectationNames: {
-                    marginLeft: 10,
-                    width: '92%',
+                    paddingHorizontal: 10,
+                    width: '90%',
           },
           activiteName: {
                     color: '#333',
                     fontSize: 16,
                     fontWeight: 'bold',
-                    width: '100%',
           },
           projetName: {
                     color: '#333',
@@ -93,8 +94,8 @@ const styles = StyleSheet.create({
           affectationsDescription: {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                    width: '100%',
-                    marginTop: 10,
+                    // width: '100%',
+                    marginTop: 5,
           },
           nbreHeures: {
                     opacity: 0.6,
@@ -109,6 +110,9 @@ const styles = StyleSheet.create({
           },
           projetHeure: {
                     flexDirection: 'row',
-                    width: '50%'
+                    width: '40%'
+          },
+          plusIcon: {
+                    padding: 10
           }
 })

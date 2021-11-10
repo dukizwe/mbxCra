@@ -4,7 +4,7 @@ const styles = StyleSheet.create({
           container: {
                     padding: 15,
                     backgroundColor: '#fff',
-                    height: '100%'
+                    height: '100%',
           },
           selectContainer: {
                     borderWidth: 1,
@@ -57,6 +57,43 @@ const styles = StyleSheet.create({
           },
           rightDateText: {
                     opacity: 0.5
+          },
+          actions: {
+                    paddingBottom: 30
+          },
+          openModalize: {
+                    backgroundColor: '#dde1ed',
+                    padding: 10,
+                    borderRadius: 5,
+                    marginTop: 5,
+                    flexDirection: 'row',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+          },
+          openModalizeLabel: {
+                    color: '#555',
+                    fontSize: 14,
+          },
+          modalContent: {
+                    paddingHorizontal: 10,
+                    paddingVertical: 15
+          },
+          modalList: {
+                    marginTop: 10,
+          },
+          modalItem: {
+                    paddingVertical: 10,
+                    paddingHorizontal: 5,
+                    marginTop: 5,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    alignContent: 'center'
+          },
+          modalText: {
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    marginLeft: 10
           }
 })
 

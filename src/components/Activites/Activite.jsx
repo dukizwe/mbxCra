@@ -54,10 +54,11 @@ const styles = StyleSheet.create({
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    marginTop: 5
+                    marginTop: 5,
+                    paddingRight: 10
           },
           projetActiviteText: {
-                    width: '40%',
+                    width: '80%',
                     opacity: 0.8
           },
           projetDateText: {

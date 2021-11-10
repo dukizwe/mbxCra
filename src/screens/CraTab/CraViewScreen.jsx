@@ -1,16 +1,16 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigation, useRoute } from "@react-navigation/core"
 import { MaterialIcons } from '@expo/vector-icons'; 
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import NewCra from '../components/NewCra/NewCra'
-import { primaryColor } from '../components/Welcome/styles';
 import { Modal, Button, useToast } from 'native-base';
-import { CraContext } from '../context/CraContext';
-import { fetchApi } from '../functions';
+import { fetchApi } from '../../functions';
 import { useDispatch, useSelector } from 'react-redux';
-import { crasSeletor } from '../store/selectors/crasSelector';
-import { addCrasAction } from '../store/actions/craActions';
+import { addCrasAction } from '../../store/actions/craActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NewCra from '../../components/NewCra/NewCra';
+import { primaryColor } from '../../components/Welcome/styles';
+import { crasSeletor } from '../../store/selectors/crasSelector';
+import { CraContext } from '../../context/CraContext';
 
 export const ViewCraHeader = () => {
           const navigation = useNavigation()
@@ -98,7 +98,7 @@ export const DeleteModal = () => {
           )
 }
 
-export default function ViewCraScreen() {
+export default function CraViewScreen() {
           const route = useRoute()
           const { activite, setActivite, setState } = route.params
           const [inEdit, setInEdit] = useState(false)

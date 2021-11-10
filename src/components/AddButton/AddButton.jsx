@@ -3,11 +3,18 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 
 import { AntDesign } from '@expo/vector-icons'; 
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation, useRoute } from '@react-navigation/core';
 
-export default function AddButton() {
+export default function AddButton({ isForCra, affectation, setAffectation }) {
           const navigation = useNavigation()
-          return <TouchableOpacity style={styles.addBtn} onPress={() => navigation.navigate('NonPlanifie')}>
+          const handleNavigation = () => {
+                    if(isForCra) {
+                              navigation.navigate('NewCra', { affectation, setAffectation })
+                    } else {
+                              navigation.navigate('NonPlanifie')
+                    }
+          }
+          return <TouchableOpacity style={styles.addBtn} onPress={() => handleNavigation()}>
                     <AntDesign name="plus" size={24} color="white" />
           </TouchableOpacity>
 }
