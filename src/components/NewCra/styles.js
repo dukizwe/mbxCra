@@ -1,24 +1,26 @@
 import { StyleSheet } from 'react-native'
+import { alignItems } from 'styled-system'
 const styles = StyleSheet.create({
-          container: {
-                    padding: 15,
-                    backgroundColor: '#fff',
-                    height: '100%'
-          },
-          openModalize: {
-                    backgroundColor: '#dde1ed',
-                    padding: 10,
-                    borderRadius: 5,
+          heureModalItem: {
+                    paddingVertical: 10,
+                    paddingHorizontal: 5,
                     marginTop: 5,
                     flexDirection: 'row',
-                    alignContent: 'center',
                     alignItems: 'center',
-                    justifyContent: 'space-between'
+                    alignContent: 'center',
           },
-          openModalizeLabel: {
-                    color: '#555',
-                    fontSize: 14,
+          checkSqaure: {
+                    width: 15,
+                    height: 15,
+                    borderWidth: 1,
+                    borderColor: '#777',
+                    alignItems: 'center',
+                    alignContent: 'center',
+                    justifyContent: 'center'
           },
+          heureLabel: {
+                    marginLeft: 5
+          }
 })
 
 export default styles

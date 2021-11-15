@@ -6,6 +6,7 @@ import AppContainer from './src/AppContainer';
 import { store } from './src/store'
 import * as Notifications from 'expo-notifications';
 import { registerForPushNotificationsAsync } from './src/functions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
           const notificationListener = useRef();
@@ -23,18 +24,37 @@ export default function App() {
                                         },
                               });
                               await Notifications.cancelAllScheduledNotificationsAsync()
-                              await Notifications.scheduleNotificationAsync({
-                                        content: {
-                                                  title: 'Complétez le CRA',
-                                                  body: "C'est déjà 17h, rappelez-vous de compléter ce que vous avez réalisés aujourd'hui",
-                                                  sticky: true
-                                        },
-                                        trigger: {
-                                                  hour: 17,
-                                                  minute: 0,
-                                                  repeats: true,
-                                        },
-                              })
+                              const previousSettings = await AsyncStorage.getItem('settings')
+                              if(previousSettings) {
+                                        const settings = JSON.parse(previousSettings)
+                                        if(settings.notification) {
+                                                  await Notifications.scheduleNotificationAsync({
+                                                            content: {
+                                                                      title: 'Complétez le CRA',
+                                                                      body: settings.notificationMessage,
+                                                                      sticky: true
+                                                            },
+                                                            trigger: {
+                                                                      hour: 17,
+                                                                      minute: 0,
+                                                                      repeats: true,
+                                                            },
+                                                  })
+                                        }
+                              } else {
+                                        await Notifications.scheduleNotificationAsync({
+                                                  content: {
+                                                            title: 'Complétez le CRA',
+                                                            body: "C'est déjà 17h, rappelez-vous de compléter ce que vous avez réalisés aujourd'hui",
+                                                            sticky: true
+                                                  },
+                                                  trigger: {
+                                                            hour: 17,
+                                                            minute: 0,
+                                                            repeats: true,
+                                                  },
+                                        })
+                              }
                     });
 
                     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {

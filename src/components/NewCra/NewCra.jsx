@@ -5,7 +5,7 @@ import { View, Text, TouchableWithoutFeedback, ActivityIndicator, TouchableOpaci
 import { MaterialIcons } from "@expo/vector-icons"
 import { useNavigation, useRoute } from '@react-navigation/core'
 import { useState } from 'react'
-import styles from '../NonPlanifie/styles'
+import planifieStyles from '../NonPlanifie/styles'
 import { AntDesign } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker'
 import { primaryColor } from '../Welcome/styles';
@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux'
 import { crasSeletor } from '../../store/selectors/crasSelector'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { userSelector } from '../../store/selectors/userSelector'
+import styles from './styles'
 
 export default function NewCra({ activite }) {
           const navigation = useNavigation()
@@ -195,7 +196,8 @@ export default function NewCra({ activite }) {
                                                                                 onPress={() => chooseDateDebut(heure)}
                                                                                 background={TouchableNativeFeedback.Ripple('#c9c5c5', false)}>
                                                                                           <View style={styles.heureModalItem}>
-                                                                                                    <Text>{heure.label}</Text>
+                                                                                                    <View style={styles.checkSqaure}>{selectedDebut.label == heure.label && <AntDesign name="check" size={15} color="black" />}</View>
+                                                                                                    <Text style={styles.heureLabel}>{heure.label}</Text>
                                                                                           </View>
                                                                       </TouchableNativeFeedback>)}
                                                   </Modal.Body>
@@ -220,7 +222,8 @@ export default function NewCra({ activite }) {
                                                                                 onPress={() => chooseDateFin(heure)}
                                                                                 background={TouchableNativeFeedback.Ripple('#c9c5c5', false)}>
                                                                                           <View style={styles.heureModalItem}>
-                                                                                                    <Text>{heure.label}</Text>
+                                                                                                    <View style={styles.checkSqaure}>{selectedFin.label == heure.label && <AntDesign name="check" size={15} color="black" />}</View>
+                                                                                                    <Text style={styles.heureLabel}>{heure.label}</Text>
                                                                                           </View>
                                                                       </TouchableNativeFeedback>)}
                                                   </Modal.Body>
@@ -231,28 +234,28 @@ export default function NewCra({ activite }) {
           return (
                    
                     <NativeBaseProvider>
-                              <ScrollView style={styles.container}>
-                                        <View style={styles.datePickerButton}>
-                                                  <View style={styles.iconDebutName}>
-                                                            <MaterialIcons name="calendar-today"  size={24} color="#777" style={styles.icon} />
-                                                            <Text style={styles.debutName}>Date CRA</Text>
+                              <ScrollView style={planifieStyles.container}>
+                                        <View style={planifieStyles.datePickerButton}>
+                                                  <View style={planifieStyles.iconDebutName}>
+                                                            <MaterialIcons name="calendar-today"  size={24} color="#777" style={planifieStyles.icon} />
+                                                            <Text style={planifieStyles.debutName}>Date CRA</Text>
                                                   </View>
-                                                  <View style={styles.rightDate}>
-                                                            <Text style={styles.rightDateText}>{`${dateToday.getDate()}/${dateToday.getMonth() + 1}/${dateToday.getFullYear()}`}</Text>
+                                                  <View style={planifieStyles.rightDate}>
+                                                            <Text style={planifieStyles.rightDateText}>{`${dateToday.getDate()}/${dateToday.getMonth() + 1}/${dateToday.getFullYear()}`}</Text>
                                                   </View>
                                         </View>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', alignContent: 'center' }}>
-                                                <Text style={styles.label}>Activité</Text>
+                                                <Text style={planifieStyles.label}>Activité</Text>
                                                 {loadingActivite && <ActivityIndicator color="#007BFF" isLoading={loadingActivite}/>}
                                         </View>
                                         <DropDownPicker
                                                   items={selectedActivite}
                                                   placeholder={selectedActivite[0] ? selectedActivite[0].label : ''}
-                                                  style={{...styles.selectContainer, zIndex: 1}}
+                                                  style={{...planifieStyles.selectContainer, zIndex: 1}}
                                                   showArrowIcon={true}
                                                   ArrowUpIconComponent={({ style }) => <AntDesign name="caretup" size={16} color="#777" />}
                                                   ArrowDownIconComponent={({ style }) => <AntDesign name="caretdown" size={16} color="#777" />}
-                                                  dropDownContainerStyle={styles.dropdownBox}
+                                                  dropDownContainerStyle={planifieStyles.dropdownBox}
                                                   itemSeparator={true}
                                                   itemSeparatorStyle={{ opacity: 0.1}}
                                                   listItemLabelStyle={{ fontSize: 16}}
@@ -268,14 +271,14 @@ export default function NewCra({ activite }) {
                                                             color="muted.400"
                                                   />}
                                         />
-                                        <Text style={styles.label}>De</Text>
-                                        <TouchableOpacity onPress={() => setShowDebut(true)} style={styles.openModalize}>
-                                                  <Text style={styles.openModalizeLabel} numberOfLines={1}>{selectedDebut ? selectedDebut.label :  "Selectionner l'heure"}</Text>
+                                        <Text style={planifieStyles.label}>De</Text>
+                                        <TouchableOpacity onPress={() => setShowDebut(true)} style={planifieStyles.openModalize}>
+                                                  <Text style={planifieStyles.openModalizeLabel} numberOfLines={1}>{selectedDebut ? selectedDebut.label :  "Selectionner l'heure"}</Text>
                                                   <AntDesign name="caretdown" size={16} color="#777" />
                                         </TouchableOpacity>
-                                        <Text style={styles.label}>À</Text>
-                                        <TouchableOpacity onPress={() => setShowFin(true)} style={styles.openModalize}>
-                                                  <Text style={styles.openModalizeLabel} numberOfLines={1}>{selectedFin ? selectedFin.label :  "Selectionner l'heure"}</Text>
+                                        <Text style={planifieStyles.label}>À</Text>
+                                        <TouchableOpacity onPress={() => setShowFin(true)} style={planifieStyles.openModalize}>
+                                                  <Text style={planifieStyles.openModalizeLabel} numberOfLines={1}>{selectedFin ? selectedFin.label :  "Selectionner l'heure"}</Text>
                                                   <AntDesign name="caretdown" size={16} color="#777" />
                                         </TouchableOpacity>
                                         <TextArea isDisabled={isView && !inEdit}
@@ -290,17 +293,17 @@ export default function NewCra({ activite }) {
                                         />
                                         <HStack space={4} alignItems="center" style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
                                                   <TouchableWithoutFeedback onPress={() => setStatut(e => !e)}>
-                                                            <Text style={styles.label}>Activité finie</Text>
+                                                            <Text style={planifieStyles.label}>Activité finie</Text>
                                                   </TouchableWithoutFeedback>
                                                   <Switch isChecked={statut} onChange={() => setStatut(e => !e)} colorScheme="primary" />
                                         </HStack>
-                                        <View style={styles.actions}>
+                                        <View style={planifieStyles.actions}>
                                                   <Button
                                                             isDisabled={canIDisabled()}
                                                             isLoading={loading}
                                                             onPress={onSubmit}
                                                             size='lg' w="full" mt={10}
-                                                            style={styles.login} py={4} backgroundColor={primaryColor} _text={{ fontSize: 18}} borderRadius={10}
+                                                            style={planifieStyles.login} py={4} backgroundColor={primaryColor} _text={{ fontSize: 18}} borderRadius={10}
                                                             >Enregistrer</Button>
                                         </View>
                               </ScrollView>

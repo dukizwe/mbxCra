@@ -95,11 +95,6 @@ const styles = StyleSheet.create({
                     fontWeight: 'bold',
                     marginLeft: 10
           },
-          heureModalItem: {
-                    paddingVertical: 10,
-                    paddingHorizontal: 5,
-                    marginTop: 5,
-          }
 })
 
 export default styles

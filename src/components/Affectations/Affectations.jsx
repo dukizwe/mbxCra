@@ -8,8 +8,6 @@ import { userSelector } from '../../store/selectors/userSelector'
 import { primaryColor } from '../Welcome/styles'
 import Skeleton from "../Skeleton/Skeleton"
 
-
-
 export const Skeletons = () => {
           const fakeElements = []
           for (let i = 1; i <= 20 ; i++) {

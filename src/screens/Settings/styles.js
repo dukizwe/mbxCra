@@ -40,6 +40,27 @@ const styles = StyleSheet.create({
           },
           settingDescription: {
                     opacity: 0.7,
+          },
+          messageModalItem: {
+                    paddingVertical: 10,
+                    paddingHorizontal: 5,
+                    marginTop: 5,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    alignContent: 'center',
+          },
+          checkSqaure: {
+                    width: 15,
+                    height: 15,
+                    borderWidth: 1,
+                    borderColor: '#777',
+                    alignItems: 'center',
+                    alignContent: 'center',
+                    justifyContent: 'center'
+          },
+          messageLabel: {
+                    marginLeft: 5,
+                    width: '90%'
           }
 })
 
