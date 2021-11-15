@@ -21,7 +21,7 @@ export default function Login() {
           const submitForm = async () => {
                     setLoading(true)
                     try  {
-                              const { user } = await fetchApi('http://192.168.43.235:8080/login', {
+                              const { user } = await fetchApi('http://app.mediabox.bi:3140/login', {
                                         method: 'POST',
                                         body: JSON.stringify({email, password}),
                                         headers: {

@@ -5,11 +5,11 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'; 
 import { useNavigation, useRoute } from '@react-navigation/core';
 
-export default function AddButton({ isForCra, affectation, setAffectation }) {
+export default function AddButton({ isForCra, affectation }) {
           const navigation = useNavigation()
           const handleNavigation = () => {
                     if(isForCra) {
-                              navigation.navigate('NewCra', { affectation, setAffectation })
+                              navigation.navigate('NewCra', { affectation })
                     } else {
                               navigation.navigate('NonPlanifie')
                     }

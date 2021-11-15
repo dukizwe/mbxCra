@@ -8,8 +8,10 @@ import AffectationViewScreen from '../screens/AffectationTab/AffectationViewScre
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import NonPlanifie from '../components/NonPlanifie/NonPlanifie'
 import NewCraScreen from '../screens/AffectationTab/NewCraScreen'
+import { useNavigation, useRoute } from '@react-navigation/core'
 
-const AffectationMenu = () => {
+const AffectationMenu = ({navigation, route}) => {
+          const { affectation, setAffectation } = route.params
           return <Menu style={styles.menu} placement='bottom' trigger={(triggerProps) => {
                               return (
                               <TouchableOpacity {...triggerProps}>
@@ -18,7 +20,7 @@ const AffectationMenu = () => {
                     )
           }}
           >
-          <Menu.Item style={styles.menuItem} /* onPress={} */>Ajouter CRA</Menu.Item>
+          <Menu.Item style={styles.menuItem} onPress={() => navigation.navigate('NewCra', { affectation, setAffectation })}>Ajouter CRA</Menu.Item>
           <Menu.Item style={styles.menuItem} /* onPress={} */>Modifier</Menu.Item>
           <Menu.Item style={styles.menuItem} /* onPress={} */>Supprimer</Menu.Item>
 </Menu>
@@ -29,11 +31,11 @@ export default function AffectationNavigator() {
           return (
                     <Stack.Navigator>
                               <Stack.Screen name="Affectations" component={AffectationsScreen} options={{ header: () => <Header />}} />
-                              <Stack.Screen name="AffectationView" component={AffectationViewScreen} options={{
+                              <Stack.Screen name="AffectationView" component={AffectationViewScreen} options={({ navigation, route}) => ({
                                         title: '',
                                         headerShadowVisible: false,
-                                        headerRight: () => <AffectationMenu />,
-                                        headerStyle: {backgroundColor: '#F2F5FE'}}}  />
+                                        headerRight: () => <AffectationMenu navigation={navigation} route={route} />,
+                                        headerStyle: {backgroundColor: '#F2F5FE'}})}  />
                               <Stack.Screen name="NonPlanifie" component={NonPlanifie} options={{ title: 'Activité non planifié' }}/>
                               <Stack.Screen name="NewCra" component={NewCraScreen} options={{ title: 'Ajouter un CRA' }}/>
                     </Stack.Navigator>

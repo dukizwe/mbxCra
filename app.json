@@ -28,6 +28,13 @@
                     },
                     "web": {
                               "favicon": "./assets/logo.png"
+                    },
+                    "notification": {
+                              "icon": "./assets/logo.png",
+                              "color": "#dddddd",
+                              "androidMode": "default",
+                              "androidCollapsedTitle": "Cra",
+                              "iosDisplayInForeground": true
                     }
           }
 }

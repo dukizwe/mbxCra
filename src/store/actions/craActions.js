@@ -1,5 +1,5 @@
 import { fetchApi } from "../../functions"
-import { ADD_CRA_ACTION, APPEND_CRA_ACTION, PREPEND_CRA_ACTION } from "../reducers/craReducer"
+import { ADD_CRA_ACTION, APPEND_CRA_ACTION, SET_CRAS_LOADING, PREPEND_CRA_ACTION } from "../reducers/craReducer"
 
 export const appendCrasAction = (cras) => {
           return {
@@ -22,11 +22,20 @@ export const addCrasAction = (cras) => {
           }
 }
 
+export const setCrasLoadingAction = (bool) => {
+          return {
+                    type: SET_CRAS_LOADING,
+                    payload: bool
+          }
+}
+
 export const loadCrasAction = (collaboId) => async (dispatch) => {
+          dispatch(setCrasLoadingAction(true))
           try {
-                    const fetchedCras = await fetchApi('http://192.168.43.235:8080/Afficher_cra/'+collaboId)
+                    const fetchedCras = await fetchApi('http://app.mediabox.bi:3140/Afficher_cra/'+collaboId)
                     dispatch(addCrasAction(fetchedCras))
           } catch (error) {
                     console.log(error)
           }
+          dispatch(setCrasLoadingAction(false))
 }

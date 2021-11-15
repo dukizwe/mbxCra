@@ -4,8 +4,11 @@ import { Feather } from '@expo/vector-icons'
 import { Entypo } from '@expo/vector-icons'; 
 import { FontAwesome5 } from '@expo/vector-icons';
 import { primaryColor } from '../Welcome/styles';
+import { useSelector } from 'react-redux'
+import { uncompletedAffectationSelector } from '../../store/selectors/affectationsSelector'
 
 export default function BottomTabBar({ state, descriptors, navigation }) {
+          const uncompletedAffectations = useSelector(uncompletedAffectationSelector)
           return (
                     <View style={styles.tabBar}>
                               {state.routes.map((route, index) => {
@@ -47,7 +50,7 @@ export default function BottomTabBar({ state, descriptors, navigation }) {
                                         }
 
                                         const Badge = () => {
-                                                  return <View style={styles.badge}><Text style={styles.badgeText}>7</Text></View>
+                                                  return <View style={styles.badge}><Text style={styles.badgeText}>{uncompletedAffectations.length}</Text></View>
                                         }
                                         return (
                                                   <TouchableNativeFeedback

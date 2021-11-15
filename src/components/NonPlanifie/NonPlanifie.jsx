@@ -16,10 +16,32 @@ import { userSelector } from '../../store/selectors/userSelector'
 import { affectationsSeletor } from '../../store/selectors/affectationsSelector';
 import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { prependAffectationsAction } from '../../store/actions/affectationsActions';
+import { loadAffectations } from '../../store/actions/affectationsActions';
 import { Modalize } from 'react-native-modalize';
 import { Portal } from 'react-native-portalize';
+import Skeleton from '../Skeleton/Skeleton';
 
+
+export const Skeletons = () => {
+          const fakeElements = []
+          for (let i = 1; i <= 20 ; i++) {
+                    fakeElements.push(i)
+          }
+          return (
+          <View style={{alignItems:"center", paddingTop: 15}}>
+                    {fakeElements.map((fe, i) => <View key={i.toString()} style={{backgroundColor: '#e8e7e7', padding: 10, width: '100%', borderRadius: 10, flexDirection: 'row', marginTop: i > 0 ? 10 : 0}}>
+                              <Skeleton style={{width:30, height: 30, borderRadius: 50, backgroundColor: '#fff'}} />
+                              <View style={{flex: 1, marginLeft: 5}}>
+                                        <Skeleton style={{flex: 1, height: 20, borderRadius: 2, backgroundColor: '#fff'}} />
+                                        <View style={{width: '100%', justifyContent: 'space-between', flexDirection: 'row', marginTop: 5}}>
+                                                  <Skeleton style={{width:'30%', height: 10, borderRadius: 2, backgroundColor: '#fff'}} />
+                                                  <Skeleton style={{width:'30%', height: 10, borderRadius: 2, backgroundColor: '#fff'}} />
+                                        </View>
+                              </View>
+                    </View>)}
+          </View>
+          )
+}
 
 export default function NonPlanifie() {
           const toast = useToast()
@@ -90,7 +112,7 @@ export default function NonPlanifie() {
                                         Commentaires: comment,
                                         IDEmploye: user.collaboId,
                               }
-                              const newAffectation = await fetchApi('http://192.168.43.235:8080/Enregistre_Activite', {
+                              const newAffectation = await fetchApi('http://app.mediabox.bi:3140/Enregistre_Activite', {
                                         method: 'POST',
                                         body: JSON.stringify(affectationData),
                                         headers: {
@@ -103,8 +125,9 @@ export default function NonPlanifie() {
                                         DateFin: new Date(dateFin),
                                         IDActivite: newAffectation.IDActivite
                                }}
-                              await AsyncStorage.setItem('affectations', JSON.stringify({ affectations: [te, ...affectations] }))
-                              dispatch(prependAffectationsAction(te))
+                              // await AsyncStorage.setItem('affectations', JSON.stringify({ affectations: [te, ...affectations] }))
+                              // dispatch(prependAffectationsAction(te))
+                              dispatch(loadAffectations(user.collaboId))
                               setLoading(false)
                               navigation.goBack()
                               toast.show({
@@ -166,7 +189,8 @@ export default function NonPlanifie() {
                                                   />
                                         </View>
                                         <View style={styles.modalList}>
-                                                  {itemsToShow.map(project => {
+                                                  {loadingProjets ? <Skeletons /> :
+                                                   itemsToShow.map(project => {
                                                             return <TouchableOpacity onPress={() => setSelectedProject(project)} style={styles.modalItem} key={project.value}>
                                                                                 <FontAwesome name="dot-circle-o" size={20} color="#777" />
                                                                                 <Text numberOfLines={1} style={styles.modalText}>{project.label}</Text>
@@ -227,7 +251,8 @@ export default function NonPlanifie() {
                                                   />
                                         </View>
                                         <View style={styles.modalList}>
-                                                  {itemsToShow.map(tache => {
+                                                  {loadingTache ? <Skeletons /> :
+                                                  itemsToShow.map(tache => {
                                                             return <TouchableOpacity onPress={() => setSelectedTache(tache)} style={styles.modalItem} key={tache.value}>
                                                                                 <FontAwesome name="dot-circle-o" size={20} color="#777" />
                                                                                 <Text numberOfLines={1} style={styles.modalText}>{tache.label}</Text>

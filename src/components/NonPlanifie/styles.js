@@ -94,6 +94,11 @@ const styles = StyleSheet.create({
                     fontSize: 16,
                     fontWeight: 'bold',
                     marginLeft: 10
+          },
+          heureModalItem: {
+                    paddingVertical: 10,
+                    paddingHorizontal: 5,
+                    marginTop: 5,
           }
 })
 

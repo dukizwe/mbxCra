@@ -10,10 +10,10 @@ export default function Affectation({ affectation: defaultAFf }) {
           const navigation = useNavigation()
           // affectation.ActiviteFinie = 0
           const handleAffectationPress = () => {
-                    !affectation.ActiviteFinie && navigation.navigate('AffectationView', { affectation, setAffectation })
+                    !affectation.ActiviteFinie && navigation.navigate('AffectationView', { affectation })
           }
           const handleNewCraPress = () => {
-                    navigation.navigate('NewCra', { affectation, setAffectation })
+                    navigation.navigate('NewCra', { affectation })
           }
 
           const decDate = date => {
@@ -26,8 +26,9 @@ export default function Affectation({ affectation: defaultAFf }) {
           const TouchOrView = (props) => {
                     if(affectation.ActiviteFinie) {
                               return <View style={{...styles.affectation, ...finishedStyles}}>{props.children}</View>
+                    } else {
+                              return <TouchableOpacity style={{...styles.affectation}} onPress={handleAffectationPress}>{props.children}</TouchableOpacity>
                     }
-                    return <TouchableOpacity style={{...styles.affectation, ...finishedStyles}} onPress={handleAffectationPress}>{props.children}</TouchableOpacity>
           }
           return (
                     <TouchOrView  >

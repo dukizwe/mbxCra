@@ -18,7 +18,7 @@ export default function CrasScreen() {
                                                   }}
                                                   >
                                                   <Menu.Item>
-                                                            <Input autoFocus style={styles.searchInput}  value={search} onChangeText={(value) => setSearch(value)} mt={2} placeholder="Tapez ici" size='lg' py={2} />
+                                                            <Input autoFocus style={styles.searchInput}  value={search} onChangeText={(value) => setSearch(value)} mt={2} placeholder="Recherche..." size='lg' py={2} />
                                                   </Menu.Item>
                                         </Menu>
                               </View>

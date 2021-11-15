@@ -9,7 +9,7 @@ import AddButton from '../../components/AddButton/AddButton'
 
 export default function AffectationViewScreen() {
           const route = useRoute()
-          const { affectation, setAffectation } = route.params
+          const { affectation } = route.params
           return (
                     <>
                     <ScrollView style={styles.affectationContainer}>
@@ -70,7 +70,7 @@ export default function AffectationViewScreen() {
                                         </View>
                               </View>
                     </ScrollView>
-                    <AddButton isForCra={true} affectation={affectation} setAffectation={setAffectation} />
+                    <AddButton isForCra={true} affectation={affectation} />
                     </>
           )
 }

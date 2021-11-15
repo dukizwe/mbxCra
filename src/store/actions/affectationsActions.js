@@ -1,6 +1,5 @@
-import AsyncStorage from "@react-native-async-storage/async-storage"
 import { fetchApi } from "../../functions"
-import { ADD_AFFECTATIOS_ACTION, APPEND_AFFECTATIONS_ACTION, FINIE_AFFECTATION, PREPEND_AFFECTATION_ACTION } from "../reducers/affectationsReducer"
+import { ADD_AFFECTATIOS_ACTION, APPEND_AFFECTATIONS_ACTION, FINIE_AFFECTATION, SET_AFFECTATION_LOADING, PREPEND_AFFECTATION_ACTION } from "../reducers/affectationsReducer"
 
 export const appendAffectationsAction = (affectations) => {
           return {
@@ -23,11 +22,20 @@ export const addAffectationsAction = (affectations) => {
           }
 }
 
+export const setAffectationLoadingAction = (bool) => {
+          return {
+                    type: SET_AFFECTATION_LOADING,
+                    payload: bool
+          }
+}
+
 export const loadAffectations = (collaboId) => async (dispatch) => {
+          dispatch(setAffectationLoadingAction(true))
           try {
-                    const fetchedAffectations = await fetchApi('http://192.168.43.235:8080/Afficher_affectation/'+collaboId)
+                    const fetchedAffectations = await fetchApi('http://app.mediabox.bi:3140/Afficher_affectation/'+collaboId)
                     dispatch(addAffectationsAction(fetchedAffectations))
           } catch (error) {
                     console.log(error)
           }
+          dispatch(setAffectationLoadingAction(false))
 }

@@ -3,7 +3,8 @@ import { View } from 'react-native'
 
 export default function Skeleton({style}) {
           const defaultStyle = {
-                    backgroundColor: '#dde1ed'
+                    backgroundColor: '#e8e7e7',
+                    borderRadius: 10
           }
           return <View style={{...defaultStyle, ...style}}>
 

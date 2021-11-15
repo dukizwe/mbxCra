@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 
-import { NativeBaseProvider, Button, TextArea, Icon, Switch, HStack, ScrollView, useToast,} from 'native-base'
-import { View, Text, TouchableWithoutFeedback, ActivityIndicator} from 'react-native'
+import { NativeBaseProvider, Button, TextArea, Icon, Switch, HStack, ScrollView, useToast, Modal,} from 'native-base'
+import { View, Text, TouchableWithoutFeedback, ActivityIndicator, TouchableOpacity, FlatList, TouchableNativeFeedback} from 'react-native'
 import { MaterialIcons } from "@expo/vector-icons"
 import { useNavigation, useRoute } from '@react-navigation/core'
 import { useState } from 'react'
@@ -12,18 +12,19 @@ import { primaryColor } from '../Welcome/styles';
 import { CraContext } from '../../context/CraContext'
 import useFetch from '../../hooks/useFecth'
 import { fetchApi, randomInt } from '../../functions'
-import { prependCrasAction } from '../../store/actions/craActions'
+import { loadCrasAction } from '../../store/actions/craActions'
+import { loadAffectations } from '../../store/actions/affectationsActions'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux'
 import { crasSeletor } from '../../store/selectors/crasSelector'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { userSelector } from '../../store/selectors/userSelector'
 
-export default function NewCra({ activite, setActivite }) {
+export default function NewCra({ activite }) {
           const navigation = useNavigation()
           const route = useRoute()
           const toast = useToast()
-          const { affectation, setAffectation } = route.params
+          const { affectation } = route.params
           const dispatch = useDispatch()
           const cras = useSelector(crasSeletor)
           const user = useSelector(userSelector)
@@ -57,14 +58,18 @@ export default function NewCra({ activite, setActivite }) {
           }
 
           //heures de debut
-          const [heuresDebut, setHeuresDebut] = useState(fakeheuresDebut)
           const [showDebut, setShowDebut] = useState(false)
-          const [selectedDebut, setSelectedDebut] = useState(new Date())
+          const [selectedDebut, setSelectedDebut] = useState({
+                    label: '7:30:00',
+                    value: activite ? new Date(activite.Debut) : (new Date()).setHours(8, 30)
+          })
 
           // heures de fin
-          const [heuresFin, setHeuresFin] = useState(fakeheuresFin)
           const [showFin, setShowFin] = useState(false)
-          const [selectedFin, setSelectedFin] = useState(new Date())
+          const [selectedFin, setSelectedFin] = useState({
+                    label: '8:30:00',
+                    value: activite ? new Date(activite.FIN) : (new Date()).setHours(8, 30)
+          })
 
           const [statut, setStatut] = useState(false)
 
@@ -72,88 +77,89 @@ export default function NewCra({ activite, setActivite }) {
           
           const onSubmit = async () => {
                     setLoading(true)
-                              const data = {
-                                        // EMAIL_COLLABO: 'email@gm.com',
-                                        // DATE_CRA: new Date().toJSON().slice(0, 19).replace('T', ' '),
-                                        // DATE_SAISIE_CRA: new Date().toJSON().slice(0, 19).replace('T', ' '),
-                                        ID_COLLABO: user.collaboId,
-                                        ID_ACTIVITE: IDActivite,
-                                        REALISATION: realise,
-                                        HEURE_DEBUT: selectedDebut.toJSON().slice(0, 19).replace('T', ' '),
-                                        HEURE_FIN: selectedFin.toJSON().slice(0, 19).replace('T', ' '),
-                                        RESTE_A_FAIRE: reste,
-                                        ACTIVITE_FINIE: statut
-                              }
-                              if(inEdit) {
-                                        try {
-                                                  let activiteResponse = await fetchApi('http://app.mediabox.bi:3140/cras/'+activite.ID_CRA, {
-                                                            method: 'PUT',
-                                                            body: JSON.stringify(data),
-                                                            headers: {
-                                                                      'Content-Type': 'application/json'
-                                                            }
-                                                  });
-                                                  activiteResponse.Activite = selectedActivite[0] ? selectedActivite[0].label : 'Activité',
-                                                  activiteResponse.ActiviteFinie = statut
-                                                  if(setActivite) {
-                                                            setActivite(activiteResponse)
+                    const data = {
+                              // EMAIL_COLLABO: 'email@gm.com',
+                              // DATE_CRA: new Date().toJSON().slice(0, 19).replace('T', ' '),
+                              // DATE_SAISIE_CRA: new Date().toJSON().slice(0, 19).replace('T', ' '),
+                              ID_COLLABO: user.collaboId,
+                              ID_ACTIVITE: IDActivite,
+                              REALISATION: realise,
+                              HEURE_DEBUT: (new Date(selectedDebut.value)).toJSON().slice(0, 19).replace('T', ' '),
+                              HEURE_FIN: (new Date(selectedFin.value)).toJSON().slice(0, 19).replace('T', ' '),
+                              RESTE_A_FAIRE: reste,
+                              ACTIVITE_FINIE: statut
+                    }
+                    if(inEdit) {
+                              try {
+                                        let activiteResponse = await fetchApi('http://app.mediabox.bi:3140/cras/'+activite.ID_CRA, {
+                                                  method: 'PUT',
+                                                  body: JSON.stringify(data),
+                                                  headers: {
+                                                            'Content-Type': 'application/json'
                                                   }
-                                                  await AsyncStorage.removeItem('cras')
-                                                  dispatch(prependCrasAction(activiteResponse))
-                                                  setLoading(false)
-                                                  navigation.navigate('CraTab')
-                                                  toast.show({
-                                                            title: "Modification du CRA réussi",
-                                                            placement: "bottom",
-                                                            status: 'success',
-                                                            duration: 2000
-                                                  })
-                                        } catch (error) {
-                                                  console.log(error)
-                                                  setLoading(false)
-                                                  toast.show({
-                                                            title: "CRA non modifié",
-                                                            placement: "bottom",
-                                                            status: 'error',
-                                                            duration: 2000
-                                                  })
-                                        }
-                              } else {
-                                        try {
-                                                  let activiteResponse = await fetchApi('http://app.mediabox.bi:3140/Enregistre_cra', {
-                                                            method: 'POST',
-                                                            body: JSON.stringify(data),
-                                                            headers: {
-                                                                      'Content-Type': 'application/json'
-                                                            }
-                                                  });
-                                                  activiteResponse.Activite = selectedActivite[0] ? selectedActivite[0].label : 'Activité',
-                                                  activiteResponse.DATE_SAISIE_CRA = new Date()
-                                                  activiteResponse.ActiviteFinie = statut
-                                                  if(statut && setAffectation) {
-                                                            setAffectation(aff => ({...aff, ActiviteFinie: 1}))
-                                                  }
-                                                  await AsyncStorage.setItem('cras', JSON.stringify({ cras: [activiteResponse, ...cras] }))
-                                                  dispatch(prependCrasAction(activiteResponse))
-                                                  setLoading(false)
-                                                  navigation.navigate('CraTab')
-                                                  toast.show({
-                                                            title: "Ajout du CRA réussi",
-                                                            placement: "bottom",
-                                                            status: 'success',
-                                                            duration: 2000
-                                                  })
-                                        } catch (error) {
-                                                  console.log(error, data)
-                                                  setLoading(false)
-                                                  toast.show({
-                                                            title: "CRA non ajouté",
-                                                            placement: "bottom",
-                                                            status: 'error',
-                                                            duration: 2000
-                                                  })
-                                        }
+                                        });
+                                        activiteResponse.Activite = selectedActivite[0] ? selectedActivite[0].label : 'Activité',
+                                        activiteResponse.ActiviteFinie = statut
+                                        /* if(setActivite) {
+                                                  setActivite(activiteResponse)
+                                        } */
+                                        /* await AsyncStorage.removeItem('cras')
+                                        dispatch(prependCrasAction(activiteResponse)) */
+                                        dispatch(loadCrasAction(user.collaboId))
+                                        dispatch(loadAffectations(user.collaboId))
+                                        navigation.navigate('CraTab')
+                                        toast.show({
+                                                  title: "Modification du CRA réussi",
+                                                  placement: "bottom",
+                                                  status: 'success',
+                                                  duration: 2000
+                                        })
+                              } catch (error) {
+                                        console.log(error)
+                                        toast.show({
+                                                  title: "CRA non modifié",
+                                                  placement: "bottom",
+                                                  status: 'error',
+                                                  duration: 2000
+                                        })
                               }
+                    } else {
+                              try {
+                                        let activiteResponse = await fetchApi('http://app.mediabox.bi:3140/Enregistre_cra', {
+                                                  method: 'POST',
+                                                  body: JSON.stringify(data),
+                                                  headers: {
+                                                            'Content-Type': 'application/json'
+                                                  }
+                                        });
+                                        activiteResponse.Activite = selectedActivite[0] ? selectedActivite[0].label : 'Activité',
+                                        activiteResponse.DATE_SAISIE_CRA = new Date()
+                                        activiteResponse.ActiviteFinie = statut
+                                        /*  if(statut && setAffectation) {
+                                                  setAffectation(aff => ({...aff, ActiviteFinie: 1}))
+                                        }
+                                        await AsyncStorage.setItem('cras', JSON.stringify({ cras: [activiteResponse, ...cras] }))
+                                        */
+                                        dispatch(loadCrasAction(user.collaboId))
+                                        dispatch(loadAffectations(user.collaboId))
+                                        navigation.navigate('CraTab')
+                                        toast.show({
+                                                  title: "Ajout du CRA réussi",
+                                                  placement: "bottom",
+                                                  status: 'success',
+                                                  duration: 2000
+                                        })
+                              } catch (error) {
+                                        console.log(error, data)
+                                        toast.show({
+                                                  title: "CRA non ajouté",
+                                                  placement: "bottom",
+                                                  status: 'error',
+                                                  duration: 2000
+                                        })
+                              }
+                    }
+                    setLoading(false)
           }
           /**
            * Determiner si on peut activer ou non le bouton d'envoi
@@ -170,6 +176,57 @@ export default function NewCra({ activite, setActivite }) {
                                         return true
                               }
                     }
+          }
+
+          const DateDebutModal = () => {
+                    const chooseDateDebut = (heure) => {
+                              setSelectedDebut(heure)
+                              setShowDebut(false)
+                    }
+                    return (
+                              <Modal isOpen={showDebut} onClose={() => setShowDebut(false)} size='xl'>
+                                        <Modal.Content maxWidth="400px">
+                                                  <Modal.CloseButton />
+                                                  <Modal.Body style={{marginTop: 15}}>
+                                                            {fakeheuresDebut.map(heure =>
+                                                                      <TouchableNativeFeedback
+                                                                                key={heure.label}
+                                                                                accessibilityRole="button"
+                                                                                onPress={() => chooseDateDebut(heure)}
+                                                                                background={TouchableNativeFeedback.Ripple('#c9c5c5', false)}>
+                                                                                          <View style={styles.heureModalItem}>
+                                                                                                    <Text>{heure.label}</Text>
+                                                                                          </View>
+                                                                      </TouchableNativeFeedback>)}
+                                                  </Modal.Body>
+                                        </Modal.Content>
+                              </Modal>
+                    )
+          }
+          const DateFinModal = () => {
+                    const chooseDateFin = (heure) => {
+                              setSelectedFin(heure)
+                              setShowFin(false)
+                    }
+                    return (
+                              <Modal isOpen={showFin} onClose={() => setShowFin(false)} size='xl'>
+                                        <Modal.Content maxWidth="400px">
+                                                  <Modal.CloseButton />
+                                                  <Modal.Body style={{marginTop: 15}}>
+                                                            {fakeheuresFin.map(heure =>
+                                                                      <TouchableNativeFeedback
+                                                                                key={heure.label}
+                                                                                accessibilityRole="button"
+                                                                                onPress={() => chooseDateFin(heure)}
+                                                                                background={TouchableNativeFeedback.Ripple('#c9c5c5', false)}>
+                                                                                          <View style={styles.heureModalItem}>
+                                                                                                    <Text>{heure.label}</Text>
+                                                                                          </View>
+                                                                      </TouchableNativeFeedback>)}
+                                                  </Modal.Body>
+                                        </Modal.Content>
+                              </Modal>
+                    )
           }
           return (
                    
@@ -212,43 +269,15 @@ export default function NewCra({ activite, setActivite }) {
                                                   />}
                                         />
                                         <Text style={styles.label}>De</Text>
-                                        <DropDownPicker
-                                                  open={showDebut}
-                                                  setOpen={setShowDebut}
-                                                  items={heuresDebut}
-                                                  setItems={setHeuresDebut}
-                                                  value={selectedDebut}
-                                                  setValue={setSelectedDebut}
-                                                  placeholder="Selectionner l'heure"
-                                                  style={styles.selectContainer}
-                                                  showArrowIcon={true}
-                                                  ArrowUpIconComponent={({ style }) => <AntDesign name="caretup" size={16} color="#777" />}
-                                                  ArrowDownIconComponent={({ style }) => <AntDesign name="caretdown" size={16} color="#777" />}
-                                                  dropDownContainerStyle={styles.dropdownBox}
-                                                  itemSeparator={true}
-                                                  itemSeparatorStyle={{ opacity: 0.1}}
-                                                  listItemLabelStyle={{ fontSize: 16}}
-                                                  disabled={isView && !inEdit}
-                                        />
+                                        <TouchableOpacity onPress={() => setShowDebut(true)} style={styles.openModalize}>
+                                                  <Text style={styles.openModalizeLabel} numberOfLines={1}>{selectedDebut ? selectedDebut.label :  "Selectionner l'heure"}</Text>
+                                                  <AntDesign name="caretdown" size={16} color="#777" />
+                                        </TouchableOpacity>
                                         <Text style={styles.label}>À</Text>
-                                        <DropDownPicker
-                                                  open={showFin}
-                                                  setOpen={setShowFin}
-                                                  items={heuresFin}
-                                                  setItems={setHeuresFin}
-                                                  value={selectedFin}
-                                                  setValue={setSelectedFin}
-                                                  placeholder="Selectionner l'heure"
-                                                  style={{...styles.selectContainer, zIndex: 1}}
-                                                  showArrowIcon={true}
-                                                  ArrowUpIconComponent={({ style }) => <AntDesign name="caretup" size={16} color="#777" />}
-                                                  ArrowDownIconComponent={({ style }) => <AntDesign name="caretdown" size={16} color="#777" />}
-                                                  dropDownContainerStyle={styles.dropdownBox}
-                                                  itemSeparator={true}
-                                                  itemSeparatorStyle={{ opacity: 0.1}}
-                                                  listItemLabelStyle={{ fontSize: 16}}
-                                                  disabled={isView && !inEdit}
-                                        />
+                                        <TouchableOpacity onPress={() => setShowFin(true)} style={styles.openModalize}>
+                                                  <Text style={styles.openModalizeLabel} numberOfLines={1}>{selectedFin ? selectedFin.label :  "Selectionner l'heure"}</Text>
+                                                  <AntDesign name="caretdown" size={16} color="#777" />
+                                        </TouchableOpacity>
                                         <TextArea isDisabled={isView && !inEdit}
                                                   value={reste}  onChangeText={(newValue) => setReste(newValue)}
                                                   mt={2} placeholder="Reste à faire" size='lg' pt={0} InputLeftElement={
@@ -261,7 +290,7 @@ export default function NewCra({ activite, setActivite }) {
                                         />
                                         <HStack space={4} alignItems="center" style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
                                                   <TouchableWithoutFeedback onPress={() => setStatut(e => !e)}>
-                                                            <Text style={styles.label}>Marquer comme finie</Text>
+                                                            <Text style={styles.label}>Activité finie</Text>
                                                   </TouchableWithoutFeedback>
                                                   <Switch isChecked={statut} onChange={() => setStatut(e => !e)} colorScheme="primary" />
                                         </HStack>
@@ -275,6 +304,8 @@ export default function NewCra({ activite, setActivite }) {
                                                             >Enregistrer</Button>
                                         </View>
                               </ScrollView>
+                              <DateDebutModal />
+                              <DateFinModal />
                     </NativeBaseProvider>
           )
 }

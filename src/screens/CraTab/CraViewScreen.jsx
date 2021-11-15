@@ -5,11 +5,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Modal, Button, useToast } from 'native-base';
 import { fetchApi } from '../../functions';
 import { useDispatch, useSelector } from 'react-redux';
-import { addCrasAction } from '../../store/actions/craActions';
+import { loadCrasAction } from '../../store/actions/craActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NewCra from '../../components/NewCra/NewCra';
 import { primaryColor } from '../../components/Welcome/styles';
 import { crasSeletor } from '../../store/selectors/crasSelector';
+import { userSelector } from '../../store/selectors/userSelector';
 import { CraContext } from '../../context/CraContext';
 
 export const ViewCraHeader = () => {
@@ -44,6 +45,7 @@ export const DeleteModal = () => {
           const [loading, setLoading] = useState(false)
           const cras = useSelector(crasSeletor)
           const dispatch = useDispatch()
+          const user = useSelector(userSelector)
           
           const confirmDelete = async () => {
                     setLoading(true)
@@ -51,9 +53,10 @@ export const DeleteModal = () => {
                               let deleteActive = await fetchApi('http://app.mediabox.bi:3140/cras/'+activite.ID_CRA, {
                                         method: 'DELETE',
                               });
-                              const newCras = cras.filter(cra => cra.ID_CRA != activite.ID_CRA)
+                              /* const newCras = cras.filter(cra => cra.ID_CRA != activite.ID_CRA)
                               await AsyncStorage.setItem('cras', JSON.stringify({ cras: newCras }))
-                              dispatch(addCrasAction(newCras))
+                              dispatch(addCrasAction(newCras)) */
+                              dispatch(loadCrasAction(user.collaboId))
                               navigation.goBack()
                               toast.show({
                                         title: "Suppression CRA réussi",
