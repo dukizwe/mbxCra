@@ -1,8 +1,8 @@
 import React from 'react'
 import { Dimensions, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native';
-import { Feather } from '@expo/vector-icons'
 import { Entypo } from '@expo/vector-icons'; 
 import { FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons'; 
 import { primaryColor } from '../Welcome/styles';
 import { useSelector } from 'react-redux'
 import { uncompletedAffectationSelector } from '../../store/selectors/affectationsSelector'
@@ -44,8 +44,8 @@ export default function BottomTabBar({ state, descriptors, navigation }) {
                                                             return <FontAwesome5 name="tasks" size={20} color={isFocused ? primaryColor : '#777'} />
                                                   }else if(route.name === 'CraTab') {
                                                             return <Entypo name="list" size={24} color={isFocused ? primaryColor : '#777'} />
-                                                  } else if(route.name === 'Activites')  {
-                                                            return <Feather name="activity" size={24} color={isFocused ? primaryColor : '#777'} />
+                                                  } else if(route.name === 'ReportTab')  {
+                                                            return <AntDesign name="barschart" size={24} color="#777" />
                                                   }
                                         }
 

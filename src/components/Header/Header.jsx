@@ -73,19 +73,13 @@ export default function Header() {
                     await AsyncStorage.removeItem('cras')
                     dispatch(setUserAction(null))
           }
-          const ConnectedUser = () => {
-                    return (
-                              <View style={styles.connectedUser}>
-                                        <View style={styles.userIcon}>
-                                                  <AntDesign name="user" size={20} color="black" />
-                                        </View>
-                                        <AntDesign name="caretdown" size={16} color="#777" style={{marginLeft: 10}} />
-                              </View>
-                    )
-          }
           return (<View style={styles.header}>
                     <View style={styles.logoImage}>
                               <Image source={require('../../../assets/icon.png')} style={styles.image} />
+                    </View>
+                    <View>
+                              <Text style={styles.userNames}>{user.fname} {user.lname}</Text>
+                              <Text style={{fontSize: 14, opacity: 0.7}}>{user.username}</Text>
                     </View>
                     <TouchableNativeFeedback
                               accessibilityRole="button"
@@ -96,23 +90,5 @@ export default function Header() {
                                         <Feather name="menu" size={24} color="black" />
                               </View>
                     </TouchableNativeFeedback>
-                    {/* <Menu placement='bottom' w="200" trigger={(triggerProps) => {return (
-                                        <TouchableOpacity {...triggerProps}>
-                                                  <ConnectedUser />
-                                        </TouchableOpacity>
-                                        )
-                              }}
-                              >
-                              <Menu.Item style={styles.largeUser}>
-                                        <View style={styles.largeUserIcon}>
-                                                  <AntDesign name="user" size={40} color="black" />
-                                        </View>
-                                        <Text style={styles.userNames}>{user.fname} {user.lname}</Text>
-                                        <Text style={styles.userEmail}>{user.username}</Text>
-                              </Menu.Item>
-                              <Menu.Item onPress={() => setShowPasswordModal(true)}>Changer le mot de passe</Menu.Item>
-                              <Menu.Item onPress={logout}>Déconnexion</Menu.Item>
-                    </Menu> */}
-                    <PasswordModal showPasswordModal={showPasswordModal} setShowPasswordModal={setShowPasswordModal} />
           </View>)
 }

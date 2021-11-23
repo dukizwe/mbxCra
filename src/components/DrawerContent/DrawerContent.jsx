@@ -58,7 +58,7 @@ export default function DrawerContent (props ) {
                     <DrawerContentScrollView>
                               <View styles={styles.drawerSection}>
                                         <DrawerItem
-                                                  onPress={() => navigation.navigate('Profile')}
+                                                  onPress={() => navigation.navigate('ReportTab')}
                                                   style={styles.userSection}
                                                   label={() => {
                                                             return <View style={styles.emailNames}>

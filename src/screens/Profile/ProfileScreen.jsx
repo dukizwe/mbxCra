@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/core';
 import { Feather } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'; 
 import { useSelector } from 'react-redux';
+import useFetch from '../../hooks/useFecth'
 import {
           LineChart,
           BarChart,
@@ -17,6 +18,7 @@ import {
 import {
           completedAffectationSelector,
           uncompletedAffectationSelector } from '../../store/selectors/affectationsSelector';
+import { userSelector } from '../../store/selectors/userSelector';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -28,7 +30,7 @@ export default function ProfileScreen() {
                     backgroundColor: "#e26a00",
                     backgroundGradientFrom: "#fb8c00",
                     backgroundGradientTo: "#ffa726",
-                    decimalPlaces: 2, // optional, defaults to 2dp
+                    decimalPlaces: 0, // optional, defaults to 2dp
                     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                     labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                     style: {
@@ -38,6 +40,27 @@ export default function ProfileScreen() {
                               r: "6",
                               strokeWidth: "2",
                               stroke: "#ffa726"
+                    }
+          }
+          const user = useSelector(userSelector)
+          const [affectationsLoading, affectationsReport] = useFetch('http://app.mediabox.bi:3140/affectationsReports/'+user?.collaboId)
+          const [crasLoading, crasReport] = useFetch('http://app.mediabox.bi:3140/crasReports/'+user?.collaboId)
+          const affectationsMonths = affectationsReport.map(data => data.month)
+          const affectationsDatas = []
+          for(let i = 1; i <= 12;  i++) {
+                    if(affectationsMonths.includes(i)) {
+                              affectationsDatas.push(affectationsReport.find(data => data.month == i).count)
+                    } else {
+                              affectationsDatas.push(0)
+                    }
+          }
+          const crasMonths = crasReport.map(data => data.month)
+          const crasDatas = []
+          for(let i = 1; i <= 12;  i++) {
+                    if(crasMonths.includes(i)) {
+                              crasDatas.push(crasReport.find(data => data.month == i).count)
+                    } else {
+                              crasDatas.push(0)
                     }
           }
           return (
@@ -72,29 +95,22 @@ export default function ProfileScreen() {
                                         </View>
                               </View>
                               <View style={{paddingRight: 15}}>
-                                        <Text style={styles.chartTitle}>Nombre de CRA par mois</Text>
+                                        <Text style={styles.chartTitle}>Nombre d'affectations par mois</Text>
                                         <LineChart
                                                   data={{
-                                                            labels: ["January", "February", "March", "April", "May", "June"],
+                                                            labels: ["Ja", "Fé", "Ma", "Ap", "Ma", "Ju", "Ju", "Ao", "Sep", "Oct", "No", "Dé"],
                                                             datasets: [
                                                                       {
-                                                                                data: [
-                                                                                          Math.random() * 100,
-                                                                                          Math.random() * 100,
-                                                                                          Math.random() * 100,
-                                                                                          Math.random() * 100,
-                                                                                          Math.random() * 100,
-                                                                                          Math.random() * 100
-                                                                                ]
+                                                                                data: affectationsDatas
                                                                       }
                                                             ]
                                                   }}
                                                   width={screenWidth - 30} // from react-native
                                                   height={220}
-                                                  yAxisLabel="$"
-                                                  yAxisSuffix="k"
                                                   yAxisInterval={1} // optional, defaults to 1
-                                                  chartConfig={chartConfig}
+                                                  chartConfig={{...chartConfig, 
+                                                            backgroundGradientFrom: "#2095c1",
+                                                            backgroundGradientTo: "#2095c1",}}
                                                   bezier
                                                   style={{
                                                             marginVertical: 8,
@@ -102,18 +118,38 @@ export default function ProfileScreen() {
                                                   }}
                                         />
                                         <Text style={styles.chartTitle}>Nombre de CRA par mois</Text>
-                                        <BarChart
+                                        <LineChart
                                                   data={{
-                                                            labels: ["January", "February", "March", "April", "May", "June"],
+                                                            labels: ["Ja", "Fé", "Ma", "Ap", "Ma", "Ju", "Ju", "Ao", "Sep", "Oct", "No", "Dé"],
                                                             datasets: [
                                                                       {
-                                                                                data: [20, 45, 28, 80, 99, 43]
+                                                                                data: crasDatas
                                                                       }
+                                                            ]
+                                                  }}
+                                                  width={screenWidth - 30} // from react-native
+                                                  height={220}
+                                                  yAxisInterval={1} // optional, defaults to 1
+                                                  chartConfig={{...chartConfig, 
+                                                            backgroundGradientFrom: "#2083c1",
+                                                            backgroundGradientTo: "#a085c0",}}
+                                                  bezier
+                                                  style={{
+                                                            marginVertical: 8,
+                                                            borderRadius: 15
+                                                  }}
+                                        />{/* 
+                                        <BarChart
+                                                  data={{
+                                                            labels: ["Ja", "Fé", "Ma", "Ap", "Ma", "Ju", "Ju", "Ao", "Sep", "Oct", "No", "Dé"],
+                                                            datasets: [
+                                                                      {
+                                                                                data: crasDatas
+                                                                      },
                                                             ]
                                                   }}
                                                   width={screenWidth - 30}
                                                   height={220}
-                                                  yAxisLabel="$"
                                                   chartConfig={{...chartConfig, 
                                                             backgroundGradientFrom: "#2095c1",
                                                             backgroundGradientTo: "#2095c1",}}
@@ -123,8 +159,8 @@ export default function ProfileScreen() {
                                                             borderRadius: 16
                                                   }}
                                                   showBarTops={true}
-                                        />
-                                        <Text style={styles.chartTitle}>Nombre de CRA par mois</Text>
+                                        /> */}
+                                        {/* <Text style={styles.chartTitle}>Nombre de CRA par mois</Text>
                                         <ProgressChart
                                                   data={{
                                                             labels: ["Swim", "Bike", "Run"], // optional
@@ -142,7 +178,7 @@ export default function ProfileScreen() {
                                                             marginVertical: 8,
                                                             borderRadius: 16
                                                   }}
-                                        />
+                                        /> */}
                               </View>
                               </View>
                               </ScrollView>
