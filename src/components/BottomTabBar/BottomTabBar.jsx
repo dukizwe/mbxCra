@@ -45,7 +45,7 @@ export default function BottomTabBar({ state, descriptors, navigation }) {
                                                   }else if(route.name === 'CraTab') {
                                                             return <Entypo name="list" size={24} color={isFocused ? primaryColor : '#777'} />
                                                   } else if(route.name === 'ReportTab')  {
-                                                            return <AntDesign name="barschart" size={24} color="#777" />
+                                                            return <AntDesign name="barschart" size={24} color={isFocused ? primaryColor : '#777'} />
                                                   }
                                         }
 

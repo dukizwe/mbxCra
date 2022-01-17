@@ -1,15 +1,19 @@
 import React from 'react'
 import { useRoute } from '@react-navigation/core'
-import { Text, StyleSheet, View, ScrollView } from 'react-native'
+import { Text, StyleSheet, View, ScrollView, ActivityIndicator } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialIcons } from '@expo/vector-icons'; 
 import { MyFromNow } from '../../functions';
 import AddButton from '../../components/AddButton/AddButton'
+import useFetch from '../../hooks/useFecth';
+import { primaryColor } from '../../components/Welcome/styles';
 
 export default function AffectationViewScreen() {
           const route = useRoute()
           const { affectation } = route.params
+          const [loadingDetail, detail] = useFetch('/affectationsDetail/'+affectation.IDActivite)
           return (
                     <>
                     <ScrollView style={styles.affectationContainer}>
@@ -17,7 +21,7 @@ export default function AffectationViewScreen() {
                               <View style={styles.projetTache}>
                                         <View style={styles.projet}>
                                                   <FontAwesome name="dot-circle-o" size={20} color="#777" />
-                                                  <Text style={styles.projetName}>Projet : Le nom du projet est ici</Text>
+                                                  <Text style={styles.projetName}>Projet : { affectation.Projet}</Text>
                                         </View>
                                         <View style={{...styles.projet, marginTop: 5}}>
                                                   <FontAwesome name="dot-circle-o" size={20} color="#777" />
@@ -25,7 +29,7 @@ export default function AffectationViewScreen() {
                                         </View>
                               </View>
                               {affectation.Commentaire == '' ? <View style={styles.NoComment}>
-                                        <MaterialCommunityIcons name="comment-outline" size={24} color="#777" />
+                                        <MaterialCommunityIcons name="comment-remove-outline" size={24} color="#777" />
                                         <Text style={styles.itemName}>Pas de commentaire</Text>
                               </View> : 
                               <View style={styles.comment}>
@@ -65,9 +69,18 @@ export default function AffectationViewScreen() {
                                                             <Text style={styles.itemName}>CRA</Text>
                                                   </View>
                                                   <View style={styles.itemValue}>
-                                                            <Text style={styles.itemValueText}>8</Text>
+                                                            {loadingDetail ? <ActivityIndicator color={primaryColor} isLoading={loadingDetail}/> :
+                                                                      <Text style={styles.itemValueText}>{ detail.craCount }</Text>
+                                                            }
                                                   </View>
                                         </View>
+                                        <View style={{...styles.affectationItem, borderTopWidth: 0, borderBottomWidth: 0}}>
+                                                  <View style={styles.iconName}>
+                                                            <MaterialIcons name="pending-actions" size={24} color="#777" />
+                                                            <Text style={styles.itemName}>Reste à faire</Text>
+                                                  </View>
+                                        </View>
+                                        <Text>{ detail.reste }</Text>
                               </View>
                     </ScrollView>
                     <AddButton isForCra={true} affectation={affectation} />
@@ -77,7 +90,8 @@ export default function AffectationViewScreen() {
 
 const styles = StyleSheet.create({
           affectationContainer: {
-                    paddingHorizontal: 15
+                    paddingHorizontal: 15,
+                    backgroundColor: '#fff'
           },
           affectationName: {
                     fontSize: 16,

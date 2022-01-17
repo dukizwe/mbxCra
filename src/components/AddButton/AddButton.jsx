@@ -4,6 +4,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 
 import { AntDesign } from '@expo/vector-icons'; 
 import { useNavigation, useRoute } from '@react-navigation/core';
+import { primaryColor } from '../Welcome/styles';
 
 export default function AddButton({ isForCra, affectation }) {
           const navigation = useNavigation()
@@ -21,7 +22,7 @@ export default function AddButton({ isForCra, affectation }) {
 
 const styles = StyleSheet.create({
           addBtn: {
-                    backgroundColor: '#007BFF',
+                    backgroundColor: primaryColor,
                     padding: 20,
                     width: 60,
                     height: 60,

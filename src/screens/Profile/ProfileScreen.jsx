@@ -43,8 +43,8 @@ export default function ProfileScreen() {
                     }
           }
           const user = useSelector(userSelector)
-          const [affectationsLoading, affectationsReport] = useFetch('http://app.mediabox.bi:3140/affectationsReports/'+user?.collaboId)
-          const [crasLoading, crasReport] = useFetch('http://app.mediabox.bi:3140/crasReports/'+user?.collaboId)
+          const [affectationsLoading, affectationsReport] = useFetch('/affectationsReports/'+user?.collaboId)
+          const [crasLoading, crasReport] = useFetch('/crasReports/'+user?.collaboId)
           const affectationsMonths = affectationsReport.map(data => data.month)
           const affectationsDatas = []
           for(let i = 1; i <= 12;  i++) {

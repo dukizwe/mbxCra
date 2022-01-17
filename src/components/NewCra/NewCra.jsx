@@ -20,6 +20,7 @@ import { crasSeletor } from '../../store/selectors/crasSelector'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { userSelector } from '../../store/selectors/userSelector'
 import styles from './styles'
+import moment from 'moment'
 
 export default function NewCra({ activite }) {
           const navigation = useNavigation()
@@ -37,7 +38,7 @@ export default function NewCra({ activite }) {
           const IDActivite = activite ? activite.IDActivite : affectation.IDActivite
 
           const dateToday = isView ? new Date(activite.DATE_SAISIE_CRA) : new Date();
-          const [loadingActivite, selectedActivite] = useFetch('http://app.mediabox.bi:3140/cr_activite/'+IDActivite)
+          const [loadingActivite, selectedActivite] = useFetch('/cr_activite/'+IDActivite)
           const [realise, setRealise] = useState(activite ? activite.Realisation : '')
           const [reste, setReste] = useState(activite ? activite.RESTE_A_FAIRE : '')
           const inEdit = useContext(CraContext)?.inEdit
@@ -60,21 +61,22 @@ export default function NewCra({ activite }) {
 
           //heures de debut
           const [showDebut, setShowDebut] = useState(false)
+          const getLabel = date => (parseInt(date.substring(0, 2))).toString()
           const [selectedDebut, setSelectedDebut] = useState({
-                    label: '7:30:00',
-                    value: activite ? new Date(activite.Debut) : (new Date()).setHours(8, 30)
+                    label: isView ? `${getLabel(activite.Debut)}:30:00` : '7:30:00',
+                    value: activite ? (new Date()).setHours(getLabel(activite.Debut), 30) : (new Date()).setHours(7, 30)
           })
 
           // heures de fin
           const [showFin, setShowFin] = useState(false)
           const [selectedFin, setSelectedFin] = useState({
-                    label: '8:30:00',
-                    value: activite ? new Date(activite.FIN) : (new Date()).setHours(8, 30)
+                    label: isView ? `${getLabel(activite.FIN)}:30:00` : '8:30:00',
+                    value: activite ? (new Date()).setHours(getLabel(activite.FIN), 30) : (new Date()).setHours(8, 30)
           })
 
           const [statut, setStatut] = useState(false)
 
-          const isValid = realise != '' && selectedDebut != '' && selectedFin != '' && reste != ''
+          const isValid = realise != '' && selectedDebut != '' && selectedFin != '' && (reste != '' || statut == true)
           
           const onSubmit = async () => {
                     setLoading(true)
@@ -85,14 +87,14 @@ export default function NewCra({ activite }) {
                               ID_COLLABO: user.collaboId,
                               ID_ACTIVITE: IDActivite,
                               REALISATION: realise,
-                              HEURE_DEBUT: (new Date(selectedDebut.value)).toJSON().slice(0, 19).replace('T', ' '),
-                              HEURE_FIN: (new Date(selectedFin.value)).toJSON().slice(0, 19).replace('T', ' '),
+                              HEURE_DEBUT: (moment(selectedDebut.value).format('YYYY/MM/DD HH:mm:ss')),
+                              HEURE_FIN: (moment(selectedFin.value).format('YYYY/MM/DD HH:mm:ss')),
                               RESTE_A_FAIRE: reste,
                               ACTIVITE_FINIE: statut
                     }
                     if(inEdit) {
                               try {
-                                        let activiteResponse = await fetchApi('http://app.mediabox.bi:3140/cras/'+activite.ID_CRA, {
+                                        let activiteResponse = await fetchApi('/cras/'+activite.ID_CRA, {
                                                   method: 'PUT',
                                                   body: JSON.stringify(data),
                                                   headers: {
@@ -126,7 +128,7 @@ export default function NewCra({ activite }) {
                               }
                     } else {
                               try {
-                                        let activiteResponse = await fetchApi('http://app.mediabox.bi:3140/Enregistre_cra', {
+                                        let activiteResponse = await fetchApi('/Enregistre_cra', {
                                                   method: 'POST',
                                                   body: JSON.stringify(data),
                                                   headers: {
@@ -198,6 +200,7 @@ export default function NewCra({ activite }) {
                                                                                           <View style={styles.heureModalItem}>
                                                                                                     <View style={styles.checkSqaure}>{selectedDebut.label == heure.label && <AntDesign name="check" size={15} color="black" />}</View>
                                                                                                     <Text style={styles.heureLabel}>{heure.label}</Text>
+                                                                                                    <Text>{ moment(heure.value).format() }</Text>
                                                                                           </View>
                                                                       </TouchableNativeFeedback>)}
                                                   </Modal.Body>
@@ -234,7 +237,7 @@ export default function NewCra({ activite }) {
           return (
                    
                     <NativeBaseProvider>
-                              <ScrollView style={planifieStyles.container}>
+                              <ScrollView style={planifieStyles.container} keyboardShouldPersistTaps='always'>
                                         <View style={planifieStyles.datePickerButton}>
                                                   <View style={planifieStyles.iconDebutName}>
                                                             <MaterialIcons name="calendar-today"  size={24} color="#777" style={planifieStyles.icon} />
@@ -246,7 +249,7 @@ export default function NewCra({ activite }) {
                                         </View>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', alignContent: 'center' }}>
                                                 <Text style={planifieStyles.label}>Activité</Text>
-                                                {loadingActivite && <ActivityIndicator color="#007BFF" isLoading={loadingActivite}/>}
+                                                {loadingActivite && <ActivityIndicator color={primaryColor} isLoading={loadingActivite}/>}
                                         </View>
                                         <DropDownPicker
                                                   items={selectedActivite}
@@ -272,15 +275,24 @@ export default function NewCra({ activite }) {
                                                   />}
                                         />
                                         <Text style={planifieStyles.label}>De</Text>
+                                        {isView && !inEdit ? <View style={planifieStyles.openModalize}>
+                                                  <Text style={planifieStyles.openModalizeLabel} numberOfLines={1}>{selectedDebut ? selectedDebut.label :  "Selectionner l'heure"}</Text>
+                                                  <AntDesign name="caretdown" size={16} color="#777" />
+                                        </View> :
                                         <TouchableOpacity onPress={() => setShowDebut(true)} style={planifieStyles.openModalize}>
                                                   <Text style={planifieStyles.openModalizeLabel} numberOfLines={1}>{selectedDebut ? selectedDebut.label :  "Selectionner l'heure"}</Text>
                                                   <AntDesign name="caretdown" size={16} color="#777" />
-                                        </TouchableOpacity>
+                                        </TouchableOpacity>}
+
                                         <Text style={planifieStyles.label}>À</Text>
+                                        {isView && !inEdit ? <View style={planifieStyles.openModalize}>
+                                                  <Text style={planifieStyles.openModalizeLabel} numberOfLines={1}>{selectedFin ? selectedFin.label :  "Selectionner l'heure"}</Text>
+                                                  <AntDesign name="caretdown" size={16} color="#777" />
+                                        </View>:
                                         <TouchableOpacity onPress={() => setShowFin(true)} style={planifieStyles.openModalize}>
                                                   <Text style={planifieStyles.openModalizeLabel} numberOfLines={1}>{selectedFin ? selectedFin.label :  "Selectionner l'heure"}</Text>
                                                   <AntDesign name="caretdown" size={16} color="#777" />
-                                        </TouchableOpacity>
+                                        </TouchableOpacity>}
                                         <TextArea isDisabled={isView && !inEdit}
                                                   value={reste}  onChangeText={(newValue) => setReste(newValue)}
                                                   mt={2} placeholder="Reste à faire" size='lg' pt={0} InputLeftElement={

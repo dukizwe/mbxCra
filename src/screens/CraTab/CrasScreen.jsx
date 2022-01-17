@@ -3,14 +3,24 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { AntDesign } from '@expo/vector-icons'; 
 import { Input, Menu } from 'native-base';
 import Activites from '../../components/Activites/Activites';
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../store/selectors/userSelector';
+import { useDispatch } from 'react-redux';
+import { loadCrasAction } from '../../store/actions/craActions';
 
 export default function CrasScreen() {
           const [search, setSearch] = useState('')
+          const user = useSelector(userSelector)
+          const dispatch = useDispatch()
+          const onChange = (value) => {
+                    setSearch(value)
+                    dispatch(loadCrasAction(user?.collaboId, value))
+          }
           return (
                     <View style={styles.container}>
                               <View style={styles.titleSearch}>
                                         <Text style={styles.other}>Mes CRA</Text>
-                                        <Menu placement='left' style={styles.searchMenu} w="300" trigger={(triggerProps) => {return (
+                                        <Menu onClose={() => onChange('')} placement='left' style={styles.searchMenu} w="300" trigger={(triggerProps) => {return (
                                                             <TouchableOpacity style={styles.searchButton} {...triggerProps}>
                                                                       <AntDesign name="search1" size={24} color="black" />
                                                             </TouchableOpacity>
@@ -18,7 +28,7 @@ export default function CrasScreen() {
                                                   }}
                                                   >
                                                   <Menu.Item>
-                                                            <Input autoFocus style={styles.searchInput}  value={search} onChangeText={(value) => setSearch(value)} mt={2} placeholder="Recherche..." size='lg' py={2} />
+                                                            <Input autoFocus style={styles.searchInput}  value={search} onChangeText={onChange} mt={2} placeholder="Recherche..." size='lg' py={2} />
                                                   </Menu.Item>
                                         </Menu>
                               </View>

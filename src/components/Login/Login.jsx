@@ -21,7 +21,7 @@ export default function Login() {
           const submitForm = async () => {
                     setLoading(true)
                     try  {
-                              const { user } = await fetchApi('http://app.mediabox.bi:3140/login', {
+                              const { user } = await fetchApi('/login', {
                                         method: 'POST',
                                         body: JSON.stringify({email, password}),
                                         headers: {
@@ -34,7 +34,7 @@ export default function Login() {
                     } catch(error) {
                               setLoading(false)
                               toast.show({
-                                        title: "Identifiant ou mot de passe incorrect",
+                                        title: "Identifiant incorrect",
                                         placement: "bottom",
                                         status: 'error',
                                         duration: 2000

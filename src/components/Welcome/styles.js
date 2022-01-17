@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
-export const primaryColor = "#007FFF"
+// export const primaryColor = "#007FFF"
+export const primaryColor = "#f58424"
 const styles = StyleSheet.create({
           card: {
                     width: '100%',
@@ -9,8 +10,8 @@ const styles = StyleSheet.create({
                     backgroundColor: '#fff',
                     shadowColor: '#000',
                     shadowOffset: {
-                       width: 0,
-                       height: 1
+                              width: 0,
+                              height: 1
                     },
                     shadowOpacity: 0.8,
                     shadowRadius: 2,

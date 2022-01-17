@@ -35,7 +35,7 @@ export default function AffectationNavigator() {
                                         title: '',
                                         headerShadowVisible: false,
                                         headerRight: () => <AffectationMenu navigation={navigation} route={route} />,
-                                        headerStyle: {backgroundColor: '#F2F5FE'}})}  />
+                                        headerStyle: {backgroundColor: '#fff'}})}  />
                               <Stack.Screen name="NonPlanifie" component={NonPlanifie} options={{ title: 'Activité non planifié' }}/>
                               <Stack.Screen name="NewCra" component={NewCraScreen} options={{ title: 'Ajouter un CRA' }}/>
                     </Stack.Navigator>

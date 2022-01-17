@@ -1,40 +1,41 @@
 {
-          "expo": {
-                    "name": "Cra",
-                    "slug": "CRA",
-                    "version": "1.0.0",
-                    "orientation": "portrait",
-                    "icon": "./assets/logo.png",
-                    "splash": {
-                              "image": "./assets/mbx_splash.png",
-                              "resizeMode": "contain",
-                              "backgroundColor": "#393A3C"
-                    },
-                    "updates": {
-                              "fallbackToCacheTimeout": 0
-                    },
-                    "assetBundlePatterns": [
-                              "**/*"
-                    ],
-                    "ios": {
-                              "supportsTablet": true
-                    },
-                    "android": {
-                              "adaptiveIcon": {
-                                        "foregroundImage": "./assets/mbx_logo.png",
-                                        "backgroundColor": "#FFFFFF"
-                              },
-                              "package": "com.mbx.cra"
-                    },
-                    "web": {
-                              "favicon": "./assets/logo.png"
-                    },
-                    "notification": {
-                              "icon": "./assets/logo.png",
-                              "color": "#dddddd",
-                              "androidMode": "default",
-                              "androidCollapsedTitle": "Cra",
-                              "iosDisplayInForeground": true
-                    }
-          }
+  "expo": {
+    "name": "Cra",
+    "slug": "CRA",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "splash": {
+      "image": "./assets/mbx_splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#393A3C"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mbx.cra"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/mbx_logo.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.mbx.cra"
+    },
+    "web": {
+      "favicon": "./assets/logo.png"
+    },
+    "notification": {
+      "icon": "./assets/logo.png",
+      "color": "#dddddd",
+      "androidMode": "default",
+      "androidCollapsedTitle": "Cra",
+      "iosDisplayInForeground": true
+    }
+  }
 }

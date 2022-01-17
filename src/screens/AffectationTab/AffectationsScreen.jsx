@@ -4,14 +4,23 @@ import { AntDesign } from '@expo/vector-icons';
 import { Input, Menu } from 'native-base';
 import Affectations from '../../components/Affectations/Affectations';
 import AddButton from '../../components/AddButton/AddButton';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadAffectations } from '../../store/actions/affectationsActions';
+import { userSelector } from '../../store/selectors/userSelector';
 
 export default function AffectationsScreen() {
           const [search, setSearch] = useState('')
+          const user = useSelector(userSelector)
+          const dispatch = useDispatch()
+          const onChange = (value) => {
+                    setSearch(value)
+                    dispatch(loadAffectations(user?.collaboId, value))
+          }
           return (<>
                     <View style={styles.container}>
                               <View style={styles.titleSearch}>
                                         <Text style={styles.title}>Mes affectations</Text>
-                                        <Menu placement='left' style={styles.searchMenu} w="300" trigger={(triggerProps) => {return (
+                                        <Menu onClose={() => onChange('')} placement='left' style={styles.searchMenu} w="300" trigger={(triggerProps) => {return (
                                                             <TouchableOpacity style={styles.searchButton} {...triggerProps}>
                                                                       <AntDesign name="search1" size={24} color="black" />
                                                             </TouchableOpacity>
@@ -19,7 +28,7 @@ export default function AffectationsScreen() {
                                                   }}
                                                   >
                                                   <Menu.Item>
-                                                            <Input autoFocus style={styles.searchInput}  value={search} onChangeText={(value) => setSearch(value)} mt={2} placeholder="Recherche..." size='lg' py={2} />
+                                                            <Input autoFocus style={styles.searchInput}  value={search} onChangeText={ onChange} mt={2} placeholder="Recherche..." size='lg' py={2} />
                                                   </Menu.Item>
                                         </Menu>
                                         
@@ -69,6 +78,6 @@ const styles = StyleSheet.create({
           },
           searchInput: {
                     backgroundColor: '#fff',
-                    width: 280
+                    width: '100%'
           }
 });

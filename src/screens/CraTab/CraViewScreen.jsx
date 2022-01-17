@@ -50,7 +50,7 @@ export const DeleteModal = () => {
           const confirmDelete = async () => {
                     setLoading(true)
                     try {
-                              let deleteActive = await fetchApi('http://app.mediabox.bi:3140/cras/'+activite.ID_CRA, {
+                              let deleteActive = await fetchApi('/cras/'+activite.ID_CRA, {
                                         method: 'DELETE',
                               });
                               /* const newCras = cras.filter(cra => cra.ID_CRA != activite.ID_CRA)

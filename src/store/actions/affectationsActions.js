@@ -29,10 +29,12 @@ export const setAffectationLoadingAction = (bool) => {
           }
 }
 
-export const loadAffectations = (collaboId) => async (dispatch) => {
+export const loadAffectations = (collaboId, q) => async (dispatch) => {
           dispatch(setAffectationLoadingAction(true))
           try {
-                    const fetchedAffectations = await fetchApi('http://app.mediabox.bi:3140/Afficher_affectation/'+collaboId)
+                    let url = '/Afficher_affectation/'+collaboId
+                    if(q && q != '') url += `?q=${q}`
+                    const fetchedAffectations = await fetchApi(url)
                     dispatch(addAffectationsAction(fetchedAffectations))
           } catch (error) {
                     console.log(error)

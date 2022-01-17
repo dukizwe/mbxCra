@@ -20,6 +20,7 @@ import { loadAffectations } from '../../store/actions/affectationsActions';
 import { Modalize } from 'react-native-modalize';
 import { Portal } from 'react-native-portalize';
 import Skeleton from '../Skeleton/Skeleton';
+import moment from 'moment';
 
 
 export const Skeletons = () => {
@@ -105,14 +106,14 @@ export default function NonPlanifie() {
                               const affectationData = {
                                         IDTache: tacheValue.value,
                                         DescActivite: activite,
-                                        DateDebutAct: new Date(dateDebut).toJSON().slice(0, 19).replace('T', ' '),
-                                        DateFinPrev: new Date(dateFin).toJSON().slice(0, 19).replace('T', ' '),
+                                        DateDebutAct: (moment(dateDebut).format('YYYY/MM/DD HH:mm:ss')),
+                                        DateFinPrev: (moment(dateFin).format('YYYY/MM/DD HH:mm:ss')),
                                         created_by: user.userid,
                                         NbHeureEstimees: NbHeures,
                                         Commentaires: comment,
                                         IDEmploye: user.collaboId,
                               }
-                              const newAffectation = await fetchApi('http://app.mediabox.bi:3140/Enregistre_Activite', {
+                              const newAffectation = await fetchApi('/Enregistre_Activite', {
                                         method: 'POST',
                                         body: JSON.stringify(affectationData),
                                         headers: {
@@ -157,7 +158,7 @@ export default function NonPlanifie() {
           
                     useEffect(() => {
                               (async function() {
-                                        const projets = await fetchApi('http://app.mediabox.bi:3140/projet_get');
+                                        const projets = await fetchApi('/projet_get');
                                         if(componentMounted.current) {
                                                   setLoadingProjets(false)
                                                   setProjects(projets)
@@ -212,7 +213,7 @@ export default function NonPlanifie() {
                               if(projet) {
                                         (async function() {
                                                   setLoadingTache(true)
-                                                  const taches = await fetchApi(`http://app.mediabox.bi:3140/Taches_get/${projet.value}`);
+                                                  const taches = await fetchApi(`/Taches_get/${projet.value}`);
                                                   if(componentMounted.current) {
                                                             setTacheItems(taches)
                                                             setLoadingTache(false)
@@ -266,7 +267,7 @@ export default function NonPlanifie() {
 
           return (
                     <NativeBaseProvider>
-                              <ScrollView style={styles.container}>
+                              <ScrollView style={styles.container} keyboardShouldPersistTaps='always'>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', alignContent: 'center' }}>
                                                 <Text style={styles.label}>Projet</Text>
                                         </View>

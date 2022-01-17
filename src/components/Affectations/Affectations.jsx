@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FlatList, StyleSheet, ActivityIndicator, RefreshControl, View, Textyy } from 'react-native'
+import { FlatList, StyleSheet, ActivityIndicator, RefreshControl, View, Text } from 'react-native'
 import Affectation from './Affectation'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadAffectations } from '../../store/actions/affectationsActions'
@@ -55,7 +55,8 @@ export default function Affectations() {
                                         keyExtractor={(item) => item.IDAffectation.toString()}
                                         data={affectations} renderItem={({ item }) => (
                                                   <Affectation affectation={item} />
-                              )} />
+                                        )}
+                              />
           )
 }
 

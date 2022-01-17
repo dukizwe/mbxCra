@@ -11,8 +11,10 @@ import * as Notifications from 'expo-notifications';
 export const fetchApi = async (url, options = {}) => {
           // const user = JSON.parse(localStorage.getItem('user'))
           const user = null
+          const isProduction = false
+          const domain = isProduction ? 'http://app.mediabox.bi:3140' : 'http://192.168.43.235:8080'
           if (user) options = { ...options, headers: { ...options.headers, authorization: `bearer ${user.token}` } }
-          const response = await fetch(url, {
+          const response = await fetch(domain+url, {
                     ...options
           })
           if (response.ok) {

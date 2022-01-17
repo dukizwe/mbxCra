@@ -29,10 +29,12 @@ export const setCrasLoadingAction = (bool) => {
           }
 }
 
-export const loadCrasAction = (collaboId) => async (dispatch) => {
+export const loadCrasAction = (collaboId, q) => async (dispatch) => {
           dispatch(setCrasLoadingAction(true))
           try {
-                    const fetchedCras = await fetchApi('http://app.mediabox.bi:3140/Afficher_cra/'+collaboId)
+                    let url = '/Afficher_cra/'+collaboId
+                    if(q && q != '') url += `?q=${q}`
+                    const fetchedCras = await fetchApi(url)
                     dispatch(addCrasAction(fetchedCras))
           } catch (error) {
                     console.log(error)
