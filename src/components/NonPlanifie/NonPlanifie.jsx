@@ -98,7 +98,7 @@ export default function NonPlanifie() {
           const [NbHeures, setHeures] = useState('')
           const [comment, setComment] = useState('')
 
-          const isValid = projet != '' && tacheValue != '' && activite != '' && NbHeures != ''
+          const isValid = projet && projet != '' && tacheValue && tacheValue != '' && activite != '' && NbHeures != ''
           
           const submitForm = async () => {
                     setLoading(true)

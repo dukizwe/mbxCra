@@ -7,15 +7,33 @@ import AddButton from '../../components/AddButton/AddButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadAffectations } from '../../store/actions/affectationsActions';
 import { userSelector } from '../../store/selectors/userSelector';
+import { FloatingAction } from "react-native-floating-action";
+import { primaryColor } from '../../components/Welcome/styles';
+import { useNavigation } from '@react-navigation/native';
 
 export default function AffectationsScreen() {
           const [search, setSearch] = useState('')
           const user = useSelector(userSelector)
           const dispatch = useDispatch()
+          const navigation = useNavigation()
           const onChange = (value) => {
                     setSearch(value)
                     dispatch(loadAffectations(user?.collaboId, value))
           }
+          const actions = [
+                    {
+                              text: "Activité non planifié",
+                              icon: require("../../../assets/affectation.png"),
+                              name: "activite",
+                              position: 1
+                    },
+                    {
+                              text: "Suicide",
+                              icon: require("../../../assets/suicide.png"),
+                              name: "suicide",
+                              position: 2
+                    },
+          ]
           return (<>
                     <View style={styles.container}>
                               <View style={styles.titleSearch}>
@@ -34,7 +52,18 @@ export default function AffectationsScreen() {
                                         
                               </View>
                               <Affectations />
-                              <AddButton />
+                              <FloatingAction
+                                        actions={actions}
+                                        onPressItem={name => {
+                                                  if(name == 'suicide') {
+                                                            navigation.navigate('Suicide')
+                                                  } else {
+                                                            navigation.navigate('NonPlanifie')
+                                                  }
+                                        }}
+                                        color={primaryColor}
+                              />
+                              {/* <AddButton /> */}
                     </View>
           </>)
 }

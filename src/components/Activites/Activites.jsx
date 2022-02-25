@@ -22,7 +22,7 @@ export default function Activites() {
 
           const onRefresh = () => {
                     setRefreshing(true)
-                    dispatch(loadCrasAction(user?.collaboId))
+                    dispatch(loadCrasAction(user?.collaboId, undefined, false))
                     setRefreshing(false)
           }
           const activites = useSelector(crasSeletor)

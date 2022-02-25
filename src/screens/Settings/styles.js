@@ -61,6 +61,21 @@ const styles = StyleSheet.create({
           messageLabel: {
                     marginLeft: 5,
                     width: '90%'
+          },
+          textInput: {
+                    backgroundColor: '#ddd',
+                    borderColor: '#f1f1f1',
+                    borderWidth: 1,
+                    fontSize: 16,
+                    borderRadius: 5,
+                    padding: 10,
+                    maxHeight: 150
+          },
+          maxInput: {
+                    bottom: 0,
+                    fontSize: 12,
+                    color: '#878A8C',
+                    alignSelf: 'flex-end'
           }
 })
 

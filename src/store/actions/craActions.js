@@ -29,8 +29,10 @@ export const setCrasLoadingAction = (bool) => {
           }
 }
 
-export const loadCrasAction = (collaboId, q) => async (dispatch) => {
-          dispatch(setCrasLoadingAction(true))
+export const loadCrasAction = (collaboId, q, load = true) => async (dispatch) => {
+          if(load) {
+                    dispatch(setCrasLoadingAction(true))
+          }
           try {
                     let url = '/Afficher_cra/'+collaboId
                     if(q && q != '') url += `?q=${q}`

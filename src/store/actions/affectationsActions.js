@@ -29,8 +29,10 @@ export const setAffectationLoadingAction = (bool) => {
           }
 }
 
-export const loadAffectations = (collaboId, q) => async (dispatch) => {
-          dispatch(setAffectationLoadingAction(true))
+export const loadAffectations = (collaboId, q, load = true) => async (dispatch) => {
+          if(load) {
+                    dispatch(setAffectationLoadingAction(true))
+          }
           try {
                     let url = '/Afficher_affectation/'+collaboId
                     if(q && q != '') url += `?q=${q}`

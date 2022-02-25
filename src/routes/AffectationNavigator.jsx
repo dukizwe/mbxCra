@@ -9,6 +9,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import NonPlanifie from '../components/NonPlanifie/NonPlanifie'
 import NewCraScreen from '../screens/AffectationTab/NewCraScreen'
 import { useNavigation, useRoute } from '@react-navigation/core'
+import Suicide from '../components/Suicide/Suicide'
 
 const AffectationMenu = ({navigation, route}) => {
           const { affectation, setAffectation } = route.params
@@ -37,6 +38,7 @@ export default function AffectationNavigator() {
                                         headerRight: () => <AffectationMenu navigation={navigation} route={route} />,
                                         headerStyle: {backgroundColor: '#fff'}})}  />
                               <Stack.Screen name="NonPlanifie" component={NonPlanifie} options={{ title: 'Activité non planifié' }}/>
+                              <Stack.Screen name="Suicide" component={Suicide} options={{ title: 'Déclarer une suicide' }}/>
                               <Stack.Screen name="NewCra" component={NewCraScreen} options={{ title: 'Ajouter un CRA' }}/>
                     </Stack.Navigator>
           )

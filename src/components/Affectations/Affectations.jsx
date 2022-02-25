@@ -40,7 +40,7 @@ export default function Affectations() {
           const loading = useSelector(affectationsLoadingSelector)
           const onRefresh = () => {
                     setRefreshing(true)
-                    dispatch(loadAffectations(user.collaboId))
+                    dispatch(loadAffectations(user.collaboId, undefined, false))
                     setRefreshing(false)
           }
           const affectations = useSelector(affectationsSeletor)

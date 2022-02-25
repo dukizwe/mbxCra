@@ -200,7 +200,7 @@ export default function NewCra({ activite }) {
                                                                                           <View style={styles.heureModalItem}>
                                                                                                     <View style={styles.checkSqaure}>{selectedDebut.label == heure.label && <AntDesign name="check" size={15} color="black" />}</View>
                                                                                                     <Text style={styles.heureLabel}>{heure.label}</Text>
-                                                                                                    <Text>{ moment(heure.value).format() }</Text>
+                                                                                                    {/* <Text>{ moment(heure.value).format() }</Text> */}
                                                                                           </View>
                                                                       </TouchableNativeFeedback>)}
                                                   </Modal.Body>
@@ -293,7 +293,13 @@ export default function NewCra({ activite }) {
                                                   <Text style={planifieStyles.openModalizeLabel} numberOfLines={1}>{selectedFin ? selectedFin.label :  "Selectionner l'heure"}</Text>
                                                   <AntDesign name="caretdown" size={16} color="#777" />
                                         </TouchableOpacity>}
-                                        <TextArea isDisabled={isView && !inEdit}
+                                        <HStack space={4} alignItems="center" style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
+                                                  <TouchableWithoutFeedback onPress={() => setStatut(e => !e)}>
+                                                            <Text style={planifieStyles.label}>Activité finie</Text>
+                                                  </TouchableWithoutFeedback>
+                                                  <Switch isChecked={statut} onChange={() => setStatut(e => !e)} colorScheme="primary" />
+                                        </HStack>
+                                        {!statut && <TextArea isDisabled={isView && !inEdit}
                                                   value={reste}  onChangeText={(newValue) => setReste(newValue)}
                                                   mt={2} placeholder="Reste à faire" size='lg' pt={0} InputLeftElement={
                                                   <Icon
@@ -302,13 +308,7 @@ export default function NewCra({ activite }) {
                                                             ml="2"
                                                             color="muted.400"
                                                   />}
-                                        />
-                                        <HStack space={4} alignItems="center" style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
-                                                  <TouchableWithoutFeedback onPress={() => setStatut(e => !e)}>
-                                                            <Text style={planifieStyles.label}>Activité finie</Text>
-                                                  </TouchableWithoutFeedback>
-                                                  <Switch isChecked={statut} onChange={() => setStatut(e => !e)} colorScheme="primary" />
-                                        </HStack>
+                                        />}
                                         <View style={planifieStyles.actions}>
                                                   <Button
                                                             isDisabled={canIDisabled()}

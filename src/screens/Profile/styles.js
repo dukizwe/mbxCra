@@ -7,14 +7,17 @@ const styles = StyleSheet.create({
           },
           header: {
                     paddingVertical: 15,
-                    paddingRight: 5
+                    paddingRight: 5,
+                    flexDirection: 'row',
+                    alignContent: 'center',
+                    alignItems: 'center'
           },
           goBack: {
                     paddingVertical: 10
           },
           dashboard: {
                     flexDirection: 'row',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
           },
           countContainer: {
                     backgroundColor: '#2095c1', //ebf6ff
