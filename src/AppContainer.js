@@ -9,6 +9,7 @@ import LoginScreen from "./screens/LoginScreen";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import { setUserAction } from "./store/actions/userActions";
 import { userSelector } from "./store/selectors/userSelector";
+import { fetchApi } from './functions'
 
 const Stack = createNativeStackNavigator()
 
@@ -19,7 +20,13 @@ export default function AppContainer() {
                     (async function() {
                               const user = await AsyncStorage.getItem('user')
                               // await AsyncStorage.removeItem('user')
-                              dispatch(setUserAction(JSON.parse(user)))
+                              const freshUser = JSON.parse(user)
+                              if(freshUser) {
+                                        const presence = await fetchApi(`/presences/check/${freshUser.collaboId}`)
+                                        dispatch(setUserAction({...freshUser, ...presence}))
+                              } else {
+                                        dispatch(setUserAction(freshUser))
+                              }
                               setUserLoading(false)
                     })()
           }, [dispatch])

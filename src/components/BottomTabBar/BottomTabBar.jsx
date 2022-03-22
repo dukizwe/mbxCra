@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Dimensions, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native';
 import { Entypo } from '@expo/vector-icons'; 
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -6,11 +6,13 @@ import { AntDesign } from '@expo/vector-icons';
 import { primaryColor } from '../Welcome/styles';
 import { useSelector } from 'react-redux'
 import { uncompletedAffectationSelector } from '../../store/selectors/affectationsSelector'
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 export default function BottomTabBar({ state, descriptors, navigation }) {
           const uncompletedAffectations = useSelector(uncompletedAffectationSelector)
+          const focusedRoute = getFocusedRouteNameFromRoute(state.routes[state.index])
           return (
-                    <View style={styles.tabBar}>
+                    <View style={{...styles.tabBar, display: focusedRoute == 'Scan' ? 'none': undefined}}>
                               {state.routes.map((route, index) => {
                                         const { options } = descriptors[route.key];
                                         const label = options.tabBarLabel !== undefined

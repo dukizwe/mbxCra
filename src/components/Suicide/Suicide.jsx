@@ -31,7 +31,7 @@ export default function Suicide() {
                               const newAffectation = await fetchApi('/suicides', {
                                         method: 'POST',
                                         body: JSON.stringify({
-                                                  inscriptionId: user.userid,
+                                                  collaboEmail: user.username,
                                                   projet,
                                                   tache
                                         }),

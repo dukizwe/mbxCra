@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { Text, View, StyleSheet, TouchableOpacity, Image, Button, BackHandler } from 'react-native';
 import { AntDesign } from '@expo/vector-icons'; 
-import { Input, Menu } from 'native-base';
+import { Input, Menu, useToast } from 'native-base';
 import Affectations from '../../components/Affectations/Affectations';
 import AddButton from '../../components/AddButton/AddButton';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,24 +16,58 @@ export default function AffectationsScreen() {
           const user = useSelector(userSelector)
           const dispatch = useDispatch()
           const navigation = useNavigation()
+          const toast = useToast()
           const onChange = (value) => {
                     setSearch(value)
                     dispatch(loadAffectations(user?.collaboId, value))
           }
-          const actions = [
+          const Action = ({ title, image }) => {
+                    return (
+                              <View style={styles.action}>
+                                        <Text style={styles.actionLabel}>{ title }</Text>
+                                        <View style={styles.actionIcon}>
+                                                  <Image source={image} style={{tintColor: '#fff', maxWidth: '50%', maxHeight: '50%', minWidth: '50%', minHeight: '50%'}} />
+                                        </View>
+                              </View>
+                    )
+          }
+          const [actions, setActions] = useState([
                     {
                               text: "Activité non planifié",
                               icon: require("../../../assets/affectation.png"),
                               name: "activite",
-                              position: 1
+                              position: 1,
+                              render: () => <Action title={"Activité non planifié"} image={require("../../../assets/affectation.png")} key={"key1"} />
                     },
                     {
                               text: "Suicide",
                               icon: require("../../../assets/suicide.png"),
                               name: "suicide",
-                              position: 2
+                              position: 2,
+                              render: () => <Action title={"Suicide"} image={require("../../../assets/suicide.png")} key={"key2"} />
                     },
-          ]
+          ])
+          useEffect(() => {
+                    if(!user.presence) {
+                              setActions(t => [...t, {
+                                        text: "Présence",
+                                        icon: require("../../../assets/suicide.png"),
+                                        name: "presence",
+                                        position: 3,
+                                        render: () => <Action title={"Présence"} image={require("../../../assets/qr-code.png")} key={"key3"} />
+                              }])
+                    } else {
+                              setActions(t => t.filter(t => t.name != 'presence'))
+                              toast.show({
+                                        title: "Présence pris en compte",
+                                        placement: "bottom",
+                                        status: 'success',
+                                        duration: 2000,
+                                        maxWidth: '80%'
+                              })
+                    }
+          }, [user])
+
           return (<>
                     <View style={styles.container}>
                               <View style={styles.titleSearch}>
@@ -49,7 +83,6 @@ export default function AffectationsScreen() {
                                                             <Input autoFocus style={styles.searchInput}  value={search} onChangeText={ onChange} mt={2} placeholder="Recherche..." size='lg' py={2} />
                                                   </Menu.Item>
                                         </Menu>
-                                        
                               </View>
                               <Affectations />
                               <FloatingAction
@@ -57,6 +90,8 @@ export default function AffectationsScreen() {
                                         onPressItem={name => {
                                                   if(name == 'suicide') {
                                                             navigation.navigate('Suicide')
+                                                  }else if(name == 'presence') {
+                                                            navigation.navigate('Scan')
                                                   } else {
                                                             navigation.navigate('NonPlanifie')
                                                   }
@@ -108,5 +143,26 @@ const styles = StyleSheet.create({
           searchInput: {
                     backgroundColor: '#fff',
                     width: '100%'
+          },
+          action: {
+                    flexDirection: 'row',
+                    alignContent: 'center',
+                    alignItems: 'center'
+          },
+          actionLabel: {
+                    backgroundColor: '#fff',
+                    borderRadius: 5,
+                    padding : 5,
+                    marginRight: 10,
+                    fontWeight: 'bold',
+          },
+          actionIcon: {
+                    width: 40,
+                    height: 40,
+                    backgroundColor: primaryColor,
+                    borderRadius: 50,
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'center'
           }
 });

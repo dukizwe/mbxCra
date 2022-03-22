@@ -10,6 +10,9 @@ import NonPlanifie from '../components/NonPlanifie/NonPlanifie'
 import NewCraScreen from '../screens/AffectationTab/NewCraScreen'
 import { useNavigation, useRoute } from '@react-navigation/core'
 import Suicide from '../components/Suicide/Suicide'
+import ScanScreen from '../screens/AffectationTab/ScanScreen'
+import { useSelector } from 'react-redux'
+import { userSelector } from '../store/selectors/userSelector'
 
 const AffectationMenu = ({navigation, route}) => {
           const { affectation, setAffectation } = route.params
@@ -29,6 +32,7 @@ const AffectationMenu = ({navigation, route}) => {
 
 export default function AffectationNavigator() {
           const Stack = createNativeStackNavigator()
+          const user = useSelector(userSelector)
           return (
                     <Stack.Navigator>
                               <Stack.Screen name="Affectations" component={AffectationsScreen} options={{ header: () => <Header />}} />
@@ -40,6 +44,7 @@ export default function AffectationNavigator() {
                               <Stack.Screen name="NonPlanifie" component={NonPlanifie} options={{ title: 'Activité non planifié' }}/>
                               <Stack.Screen name="Suicide" component={Suicide} options={{ title: 'Déclarer une suicide' }}/>
                               <Stack.Screen name="NewCra" component={NewCraScreen} options={{ title: 'Ajouter un CRA' }}/>
+                              {!user.presence && <Stack.Screen name="Scan" component={ScanScreen} options={{ headerShown: false }}/>}
                     </Stack.Navigator>
           )
 }
