@@ -20,7 +20,7 @@ export default function CrasScreen() {
                     <View style={styles.container}>
                               <View style={styles.titleSearch}>
                                         <Text style={styles.other}>Mes CRA</Text>
-                                        <Menu onClose={() => onChange('')} placement='left' style={styles.searchMenu} w="300" trigger={(triggerProps) => {return (
+                                        {/* <Menu onClose={() => onChange('')} placement='left' style={styles.searchMenu} w="300" trigger={(triggerProps) => {return (
                                                             <TouchableOpacity style={styles.searchButton} {...triggerProps}>
                                                                       <AntDesign name="search1" size={24} color="black" />
                                                             </TouchableOpacity>
@@ -30,7 +30,7 @@ export default function CrasScreen() {
                                                   <Menu.Item>
                                                             <Input autoFocus style={styles.searchInput}  value={search} onChangeText={onChange} mt={2} placeholder="Recherche..." size='lg' py={2} />
                                                   </Menu.Item>
-                                        </Menu>
+                                        </Menu> */}
                               </View>
                               <Activites />
                     </View>
@@ -61,12 +61,11 @@ const styles = StyleSheet.create({
           },
           other: {
                     color: '#333',
-                    paddingTop: 20,
-                    paddingBottom: 20,
                     fontSize: 20,
                     fontWeight: 'bold',
                     paddingLeft: 15,
-                    paddingRight: 15
+                    paddingRight: 15,
+                    marginVertical: 10
           },
           input: {
                     borderBottomWidth: 2,

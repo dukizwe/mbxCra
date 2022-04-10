@@ -72,7 +72,7 @@ export default function AffectationsScreen() {
                     <View style={styles.container}>
                               <View style={styles.titleSearch}>
                                         <Text style={styles.title}>Mes affectations</Text>
-                                        <Menu onClose={() => onChange('')} placement='left' style={styles.searchMenu} w="300" trigger={(triggerProps) => {return (
+                                        {/* <Menu onClose={() => onChange('')} placement='left' style={styles.searchMenu} w="300" trigger={(triggerProps) => {return (
                                                             <TouchableOpacity style={styles.searchButton} {...triggerProps}>
                                                                       <AntDesign name="search1" size={24} color="black" />
                                                             </TouchableOpacity>
@@ -82,7 +82,7 @@ export default function AffectationsScreen() {
                                                   <Menu.Item>
                                                             <Input autoFocus style={styles.searchInput}  value={search} onChangeText={ onChange} mt={2} placeholder="Recherche..." size='lg' py={2} />
                                                   </Menu.Item>
-                                        </Menu>
+                                        </Menu> */}
                               </View>
                               <Affectations />
                               <FloatingAction
@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
                     fontSize: 20,
                     fontWeight: 'bold',
                     paddingLeft: 15,
+                    marginVertical: 10
           },
           searchButton: {
                     padding: 20

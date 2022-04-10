@@ -47,11 +47,13 @@ export default function ScanScreen() {
                     askCameraPermission()
                     askLocationPermission()
           }, []);
+
+          const qrCodeData = '~e5pJVNcN*UC#:q2ezWB7,9WS$Ca#Bzaw}f"tFT4#KHQTRTY``?]x+7UAPctRh3.N$@jn%[]Tv;;ZuQ*qHR&M[k+Z$7s]9su-n6}'
         
           const handleBarCodeScanned = async ({ type, data }) => {
                     setScanned(true);
                     clearTimeout(timer)
-                    if(type == 256 && data == 'http://localhost:8080/presences') {
+                    if(type == 256 && data == qrCodeData) {
                               setLoading(true)
                               Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
                               try {
